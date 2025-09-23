@@ -7,6 +7,7 @@ DATABASE_PASSWORD=db_user_password
 DATABASE_HOST=db_host
 DATABASE_PORT=5432
 APP_PORT=3000
+APP_HOST=http://localhost
 JWT_SECRET=jwt_secret_key
 
 
