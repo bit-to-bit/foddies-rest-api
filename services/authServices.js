@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import gravatar from "gravatar";
 import { User } from "../db/User.js";
-import { findUser } from "../middlewares/authenticate";
+import { findUser } from "../middlewares/authenticate.js";
 import httpError from "../helpers/httpError.js";
 import { createToken } from "../helpers/jwt.js";
 
@@ -38,10 +38,11 @@ export const loginUser = async (payload) => {
 
   return {
     token: token,
-    user: { username, email, avatarURL },
+    user: { username: user.username, email, avatarURL: user.avatarURL },
   };
 };
 
 export const logoutUser = async (user) => {
   await user.update({ token: null });
+  return user;
 };

@@ -3,12 +3,7 @@ import { DataTypes } from "sequelize";
 import { emailRegexp } from "../constants/userConstants.js";
 
 export const User = sequelize.define("user", {
-  id: {
-    type: DataTypes.STRING(24),
-    primaryKey: true,
-    allowNull: false,
-  },
-  name: {
+  username: {
     type: DataTypes.STRING(100),
     allowNull: false,
   },
@@ -32,10 +27,10 @@ export const User = sequelize.define("user", {
   avatarURL: { type: DataTypes.STRING },
 });
 
-User.sync()
-  .then(() => {
-    console.log("DB.Table [users] successfully updated");
-  })
-  .catch((error) => {
-    console.log(error.message);
-  });
+// User.sync()
+//   .then(() => {
+//     console.log("DB.Table [users] successfully updated");
+//   })
+//   .catch((error) => {
+//     console.log(error.message);
+//   });
