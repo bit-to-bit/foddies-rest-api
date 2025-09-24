@@ -1,5 +1,5 @@
 {
-  "name": "foddies-rest-api",
+    "name": "foddies-rest-api",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
