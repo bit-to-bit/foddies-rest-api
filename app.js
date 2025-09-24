@@ -4,10 +4,10 @@ import cors from 'cors';
 import path from 'path';
 import 'dotenv/config';
 import './db/sequelize.js';
-import categoriesRouter from './routes/categoriesRouter.js';
 
-import healsRouter from "./routes/healthRouter.js";
-import usersRouter from "./routes/usersRouter.js";
+import categoriesRouter from './routes/categoriesRouter.js';
+import healsRouter from './routes/healthRouter.js';
+import ingredientsRouter from './routes/ingredientsRouter.js';
 
 const { APP_PORT = 3000 } = process.env;
 
@@ -22,8 +22,8 @@ app.use(express.static(path.resolve('public')));
 
 app.use('/api', healsRouter);
 app.use('/api/categories', categoriesRouter);
+app.use('/api/ingredients', ingredientsRouter);
 app.use("/api/users", usersRouter);
-
 
 app.use((_, res) => {
   res.status(404).json({ message: 'Route not found' });
