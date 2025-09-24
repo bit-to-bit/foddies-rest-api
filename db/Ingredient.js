@@ -1,8 +1,9 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { sequelize } from './sequelize.js';
 
-export const Ingredient = sequelize.define(
-  'Ingredient',
+export class Ingredient extends Model {}
+
+Ingredient.init(
   {
     id: {
       type: DataTypes.UUID,
