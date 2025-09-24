@@ -6,15 +6,15 @@ const Recipe = sequelize.define("Recipe", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  categoryID: {
+  categoryId: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  ownerID: {
+  ownerId: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  areaID: {
+  areaId: {
     type: DataTypes.STRING,
     allowNull: true,
   },
