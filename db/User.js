@@ -1,5 +1,6 @@
 import { sequelize } from "./sequelize.js";
 import { DataTypes } from "sequelize";
+import { emailRegexp } from "../constants/userConstants.js";
 
 export const User = sequelize.define("user", {
   id: {
@@ -15,6 +16,9 @@ export const User = sequelize.define("user", {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
+    validate: {
+      is: emailRegexp,
+    },
   },
   password: {
     type: DataTypes.STRING,
