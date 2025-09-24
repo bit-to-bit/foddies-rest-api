@@ -1,9 +1,8 @@
-import { DataTypes, Model } from 'sequelize';
 import { sequelize } from './sequelize.js';
+import { DataTypes } from 'sequelize';
 
-export class Category extends Model {}
-
-Category.init(
+export const Category = sequelize.define(
+  'Category',
   {
     id: {
       type: DataTypes.UUID,
@@ -16,8 +15,6 @@ Category.init(
     },
   },
   {
-    sequelize,
-    modelName: 'Category',
     tableName: 'categories',
     timestamps: false,
   }
