@@ -6,7 +6,8 @@ import 'dotenv/config';
 import './db/sequelize.js';
 import categoriesRouter from './routes/categoriesRouter.js';
 
-import healsRouter from './routes/healthRouter.js';
+import healsRouter from "./routes/healthRouter.js";
+import usersRouter from "./routes/usersRouter.js";
 
 const { APP_PORT = 3000 } = process.env;
 
@@ -18,8 +19,11 @@ app.use(express.json());
 
 app.use(express.static(path.resolve('public')));
 
+
 app.use('/api', healsRouter);
 app.use('/api/categories', categoriesRouter);
+app.use("/api/users", usersRouter);
+
 
 app.use((_, res) => {
   res.status(404).json({ message: 'Route not found' });
