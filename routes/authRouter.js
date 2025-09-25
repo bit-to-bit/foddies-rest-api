@@ -1,12 +1,13 @@
 import express from "express";
-import validateBody from "../middlewares/validateBody.js";
-import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
+
 import {
   registerController,
   loginController,
   logoutController,
 } from "../controllers/authControllers.js";
 import { authenticate } from "../middlewares/authenticate.js";
+import validateBody from "../middlewares/validateBody.js";
+import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
 
 const authRouter = express.Router();
 

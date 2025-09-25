@@ -1,15 +1,19 @@
+import cors from "cors";
 import express from "express";
 import morgan from "morgan";
-import cors from "cors";
 import path from "path";
+import swaggerUi from "swagger-ui-express";
+
 import "dotenv/config";
 import "./db/sequelize.js";
 
-import categoriesRouter from "./routes/categoriesRouter.js";
-import healsRouter from "./routes/healthRouter.js";
-import ingredientsRouter from "./routes/ingredientsRouter.js";
+import { swaggerSpec } from "./helpers/swagger.js";
+import areasRouter from "./routes/areasRouter.js";
 import authRouter from "./routes/authRouter.js";
-import areasRouter from './routes/areasRouter.js';
+import categoriesRouter from "./routes/categoriesRouter.js";
+import healthRouter from "./routes/healthRouter.js";
+import ingredientsRouter from "./routes/ingredientsRouter.js";
+import usersRouter from "./routes/usersRouter.js";
 
 const { APP_PORT = 3000 } = process.env;
 
@@ -19,13 +23,15 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(express.static(path.resolve("public")));
 
-app.use("/api", healsRouter);
+app.use("/api/health", healthRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/ingredients", ingredientsRouter);
 app.use("/api/users", usersRouter);
-app.use('/api/areas', areasRouter);
+app.use("/api/areas", areasRouter);
 app.use("/api/auth", authRouter);
 
 app.use((_, res) => {

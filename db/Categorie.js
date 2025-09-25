@@ -1,8 +1,9 @@
-import { sequelize } from './sequelize.js';
-import { DataTypes } from 'sequelize';
+import { DataTypes } from "sequelize";
+
+import { sequelize } from "./sequelize.js";
 
 export const Category = sequelize.define(
-  'Category',
+  "Category",
   {
     id: {
       type: DataTypes.UUID,
@@ -15,7 +16,7 @@ export const Category = sequelize.define(
     },
   },
   {
-    tableName: 'categories',
+    tableName: "categories",
     timestamps: false,
   }
 );
