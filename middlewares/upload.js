@@ -1,6 +1,6 @@
 import multer from "multer";
-import path from "path";
 import { nanoid } from "nanoid";
+import path from "path";
 
 import httpError from "../helpers/httpError.js";
 

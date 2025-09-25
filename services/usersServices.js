@@ -1,3 +1,4 @@
+
 import bcrypt from "bcrypt";
 import models from "../models/index.js";
 import { getDefaultAvatarUrl } from "../helpers/avatar.js";

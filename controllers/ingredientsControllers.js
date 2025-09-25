@@ -1,11 +1,11 @@
-import { listIngredients } from '../services/ingredientsServices.js';
+import { listIngredients } from "../services/ingredientsServices.js";
 
 export const getIngredients = async (req, res, next) => {
   try {
     const {
-      search = '',
-      limit: limitRaw = '10',
-      page: pageRaw = '1',
+      search = "",
+      limit: limitRaw = "10",
+      page: pageRaw = "1",
     } = req.query;
 
     let limit = parseInt(limitRaw, 10);
@@ -21,7 +21,7 @@ export const getIngredients = async (req, res, next) => {
 
     res.json({
       status: 200,
-      message: 'Ingredients retrieved successfully',
+      message: "Ingredients retrieved successfully",
       data: {
         items: rows,
         total: count,
