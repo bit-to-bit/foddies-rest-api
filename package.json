@@ -11,7 +11,7 @@
     "keywords": [],
     "author": "bit-to-bit",
     "license": "ISC",
-    "description": "Для запуску застосунку створіть змінні оточення (.env):",
+    "description": "Foddies REST API.",
     "dependencies": {
         "bcrypt": "^6.0.0",
         "cors": "^2.8.5",
