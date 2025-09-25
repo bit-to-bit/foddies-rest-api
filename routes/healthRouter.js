@@ -1,4 +1,5 @@
 import express from "express";
+
 import { checkHealth } from "../controllers/healthControllers.js";
 
 const healsRouter = express.Router();

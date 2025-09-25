@@ -1,11 +1,11 @@
-import { listAreas } from '../services/areasServices.js';
+import { listAreas } from "../services/areasServices.js";
 
 export const getAreas = async (req, res, next) => {
   try {
     const {
-      search = '',
-      limit: limitRaw = '10',
-      page: pageRaw = '1',
+      search = "",
+      limit: limitRaw = "10",
+      page: pageRaw = "1",
     } = req.query;
 
     let limit = parseInt(limitRaw, 10);
@@ -21,7 +21,7 @@ export const getAreas = async (req, res, next) => {
 
     res.json({
       status: 200,
-      message: 'Areas retrieved successfully',
+      message: "Areas retrieved successfully",
       data: {
         items: rows,
         total: count,
