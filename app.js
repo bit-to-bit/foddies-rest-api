@@ -13,6 +13,7 @@ import authRouter from "./routes/authRouter.js";
 import categoriesRouter from "./routes/categoriesRouter.js";
 import healthRouter from "./routes/healthRouter.js";
 import ingredientsRouter from "./routes/ingredientsRouter.js";
+import testimonialsRouter from './routes/testimonialsRouter.js';
 import usersRouter from "./routes/usersRouter.js";
 
 const { APP_PORT = 3000 } = process.env;
@@ -33,6 +34,7 @@ app.use("/api/ingredients", ingredientsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/areas", areasRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/testimonials", testimonialsRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
