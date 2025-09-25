@@ -1,9 +1,13 @@
 import "dotenv/config";
-import { verifyToken } from "../helpers/jwt.js";
-import httpError from "../helpers/httpError.js";
 import { User } from "../db/User.js";
+import httpError from "../helpers/httpError.js";
+import { verifyToken } from "../helpers/jwt.js";
 
-export const findUser = async (filter) => await User.findOne({ where: filter });
+export const findUser = async (query) => {
+  return User.findOne({
+    where: query,
+  });
+};
 
 export const authenticate = async (req, res, next) => {
   const { authorization } = req.headers;

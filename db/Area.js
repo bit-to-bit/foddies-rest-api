@@ -1,8 +1,9 @@
-import { sequelize } from './sequelize.js';
-import { DataTypes } from 'sequelize';
+import { DataTypes } from "sequelize";
+
+import { sequelize } from "./sequelize.js";
 
 export const Area = sequelize.define(
-  'Area',
+  "Area",
   {
     id: {
       type: DataTypes.UUID,
@@ -16,7 +17,7 @@ export const Area = sequelize.define(
     },
   },
   {
-    tableName: 'areas',
+    tableName: "areas",
     timestamps: false,
   }
 );

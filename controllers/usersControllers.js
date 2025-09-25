@@ -1,5 +1,5 @@
-import * as usersServices from "../services/usersServices.js";
 import httpError from "../helpers/httpError.js";
+import * as usersServices from "../services/usersServices.js";
 
 const getUserDetails = async (req, res, next) => {
   try {

@@ -1,8 +1,9 @@
-import { sequelize } from './sequelize.js';
-import { DataTypes } from 'sequelize';
+import { DataTypes } from "sequelize";
+
+import { sequelize } from "./sequelize.js";
 
 export const Ingredient = sequelize.define(
-  'Ingredient',
+  "Ingredient",
   {
     id: {
       type: DataTypes.UUID,
@@ -23,7 +24,7 @@ export const Ingredient = sequelize.define(
     },
   },
   {
-    tableName: 'ingredients',
+    tableName: "ingredients",
     timestamps: false,
   }
 );
