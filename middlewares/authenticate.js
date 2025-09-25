@@ -1,7 +1,7 @@
 import "dotenv/config";
-import { verifyToken } from "../helpers/jwt.js";
-import httpError from "../helpers/httpError.js";
 import { User } from "../db/User.js";
+import httpError from "../helpers/httpError.js";
+import { verifyToken } from "../helpers/jwt.js";
 
 export const findUser = async (query) => {
   return User.findOne({

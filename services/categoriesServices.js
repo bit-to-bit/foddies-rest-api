@@ -1,8 +1,8 @@
-import { Category } from '../db/Categorie.js';
+import { Category } from "../db/Categorie.js";
 
 export const listCategories = async () => {
   return Category.findAll({
-    attributes: ['id', 'name'],
-    order: [['name', 'ASC']],
+    attributes: ["id", "name"],
+    order: [["name", "ASC"]],
   });
 };

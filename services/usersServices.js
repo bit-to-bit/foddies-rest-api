@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+
 import { User } from "../db/User.js";
 import { getDefaultAvatarUrl } from "../helpers/avatar.js";
 import { generateUserId } from "../helpers/idGenerator.js";
