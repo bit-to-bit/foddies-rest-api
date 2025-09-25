@@ -10,6 +10,7 @@ import healsRouter from "./routes/healthRouter.js";
 import ingredientsRouter from "./routes/ingredientsRouter.js";
 import authRouter from "./routes/authRouter.js";
 import areasRouter from './routes/areasRouter.js';
+import usersRouter from './routes/usersRouter.js';
 
 const { APP_PORT = 3000 } = process.env;
 
