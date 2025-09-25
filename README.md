@@ -50,3 +50,11 @@ Automatically fix issues (must be run **before every push**):
 ```bash
 npm run lint:fix
 ```
+
+## Documentation (Swagger)
+
+Start the server and open:
+
+```http
+http://localhost:3000/docs
+```
