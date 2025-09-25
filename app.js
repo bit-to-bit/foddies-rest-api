@@ -9,7 +9,9 @@ import categoriesRouter from "./routes/categoriesRouter.js";
 import healsRouter from "./routes/healthRouter.js";
 import ingredientsRouter from "./routes/ingredientsRouter.js";
 import authRouter from "./routes/authRouter.js";
-import areasRouter from './routes/areasRouter.js';
+import areasRouter from "./routes/areasRouter.js";
+import usersRouter from "./routes/usersRouter.js";
+import recipesRouter from "./routes/recipesRouter.js";
 
 const { APP_PORT = 3000 } = process.env;
 
@@ -25,8 +27,9 @@ app.use("/api", healsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/ingredients", ingredientsRouter);
 app.use("/api/users", usersRouter);
-app.use('/api/areas', areasRouter);
+app.use("/api/areas", areasRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/recipes", recipesRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });

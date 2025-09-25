@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
-import sequelize from "./sequelize.js";
+import { sequelize } from "./sequelize.js";
 
-const Recipe = sequelize.define("Recipe", {
+const Recipe = sequelize.define("recipe", {
   title: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -36,6 +36,12 @@ const Recipe = sequelize.define("Recipe", {
   },
 });
 
-// Recipe.sync();
+// Recipe.sync()
+//   .then(() => {
+//     console.log("DB.Table [recipes] successfully updated");
+//   })
+//   .catch((error) => {
+//     console.log(error.message);
+//   });
 
 export default Recipe;
