@@ -36,7 +36,7 @@ npm run dev
 
 Check if the server is running:
 ```http
-GET http://localhost:3000/api/ping
+GET http://localhost:3000/api/health/ping
 ```
 
 ## Linting & Formatting
