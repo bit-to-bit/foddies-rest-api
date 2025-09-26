@@ -4,8 +4,8 @@ import morgan from "morgan";
 import path from "path";
 import "dotenv/config";
 import "./db/sequelize.js";
-import swaggerUi from "swagger-ui-express";
 
+import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./helpers/swagger.js";
 import areasRouter from "./routes/areasRouter.js";
 import authRouter from "./routes/authRouter.js";

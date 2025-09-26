@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 import gravatar from "gravatar";
 
+import usersServices from "./usersServices.js";
 import httpError from "../helpers/httpError.js";
 import { createToken } from "../helpers/jwt.js";
-import { findUser } from "../middlewares/authenticate.js";
 import models from "../models/index.js";
 const { User } = models;
 
@@ -25,7 +25,7 @@ export const registerUser = async (payload) => {
 
 export const loginUser = async (payload) => {
   const { email, password } = payload;
-  const user = await findUser({ email });
+  const user = await usersServices.findUser({ email });
 
   if (!user) throw new httpError(401, "Email or password is wrong!");
 

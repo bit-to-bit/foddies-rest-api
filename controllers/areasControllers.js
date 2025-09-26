@@ -26,6 +26,7 @@ export const getAreas = async (req, res, next) => {
         items: rows,
         total: count,
         page,
+        totalPages: Math.ceil(count / limit),
         limit,
       },
     });

@@ -5,7 +5,7 @@ import {
   loginController,
   logoutController,
 } from "../controllers/authControllers.js";
-import { authenticate } from "../middlewares/authenticate.js";
+import authenticate from "../middlewares/authenticate.js";
 import validateBody from "../middlewares/validateBody.js";
 import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
 
