@@ -1,9 +1,10 @@
 import bcrypt from "bcrypt";
 import gravatar from "gravatar";
-import models from "../models/index.js";
-import { findUser } from "../middlewares/authenticate.js";
+
 import httpError from "../helpers/httpError.js";
 import { createToken } from "../helpers/jwt.js";
+import { findUser } from "../middlewares/authenticate.js";
+import models from "../models/index.js";
 const { User } = models;
 
 export const registerUser = async (payload) => {

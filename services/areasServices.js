@@ -1,4 +1,5 @@
 import { Op } from "sequelize";
+
 import models from "../models/index.js";
 const { Area } = models;
 

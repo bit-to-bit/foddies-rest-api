@@ -1,8 +1,9 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../db/sequelize.js';
+import { DataTypes } from "sequelize";
+
+import { sequelize } from "../db/sequelize.js";
 
 export const Recipe = sequelize.define(
-  'recipe',
+  "recipe",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     title: { type: DataTypes.STRING, allowNull: false },
@@ -16,22 +17,28 @@ export const Recipe = sequelize.define(
   },
   {
     timestamps: true,
-    tableName: 'recipes',
-    indexes: [{ fields: ['title'] }],
+    tableName: "recipes",
+    indexes: [{ fields: ["title"] }],
   }
 );
 
 Recipe.associate = (models) => {
-  Recipe.belongsTo(models.User, { foreignKey: 'ownerId', as: 'owner' });
-  Recipe.belongsTo(models.Area, { foreignKey: 'areaId', as: 'area' });
-  Recipe.belongsTo(models.Category, { foreignKey: 'categoryId', as: 'category' });
+  Recipe.belongsTo(models.User, { foreignKey: "ownerId", as: "owner" });
+  Recipe.belongsTo(models.Area, { foreignKey: "areaId", as: "area" });
+  Recipe.belongsTo(models.Category, {
+    foreignKey: "categoryId",
+    as: "category",
+  });
 
   Recipe.belongsToMany(models.Ingredient, {
     through: models.RecipeIngredient,
-    foreignKey: 'recipeId',
-    otherKey: 'ingredientId',
-    as: 'ingredients',
+    foreignKey: "recipeId",
+    otherKey: "ingredientId",
+    as: "ingredients",
   });
 
-  Recipe.hasMany(models.RecipeIngredient, { foreignKey: 'recipeId', as: 'recipeIngredients' });
+  Recipe.hasMany(models.RecipeIngredient, {
+    foreignKey: "recipeId",
+    as: "recipeIngredients",
+  });
 };

@@ -1,5 +1,5 @@
+import { Op } from "sequelize";
 
-import { Op } from 'sequelize';
 import models from "../models/index.js";
 const { Ingredient } = models;
 

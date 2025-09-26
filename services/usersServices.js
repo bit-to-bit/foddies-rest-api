@@ -1,33 +1,82 @@
-
-import bcrypt from "bcrypt";
 import models from "../models/index.js";
-import { getDefaultAvatarUrl } from "../helpers/avatar.js";
-import { generateUserId } from "../helpers/idGenerator.js";
-const { User } = models;
+const { User, UserFollower } = models;
 
-export const findUser = async (filter) => await User.findOne({ where: filter });
+const findUser = async (filter) => await User.findOne({ where: filter });
 
-export const getUserDetails = async (filter) => {
-  const user = await findUser(filter);
+const getUserDetails = async (filter) => {
+  const user = await User.findOne({
+    attributes: ["id", "name", "email", "avatar"],
+    where: filter,
+  });
   if (!user) {
     return null;
   }
-  // TODO: Refactor this function after creating reciepes and follovers entities
-  return { ...user.get(), recipesAmount: 0, followersAmount: 0 };
+  const recipesAmount = 0;
+  const favoriteRecipesAmount = 0;
+  const followersAmount = await user.countFollowers();
+  const followingsAmount = await user.countFollowing();
+  return {
+    ...user.dataValues,
+    recipesAmount,
+    favoriteRecipesAmount,
+    followersAmount,
+    followingsAmount,
+  };
 };
 
-export const createUser = async (data) => {
-  const { password, id = generateUserId() } = data;
-  const hashPassword = await bcrypt.hash(password, 10);
-  const avatar = getDefaultAvatarUrl();
-  return User.create({ ...data, password: hashPassword, avatarURL: avatar });
+const getFollowers = async (id) => {
+  const user = await User.findByPk(id);
+  if (!user) {
+    return null;
+  }
+  const followers = await user.getFollowers();
+  return followers;
 };
 
-export const updateUser = async (filter, data) => {
+const getFollowings = async (id) => {
+  const user = await User.findByPk(id);
+  if (!user) {
+    return null;
+  }
+  const followings = await user.getFollowings();
+  return followings;
+};
+
+const subscribe = async (followerId, followingId) => {
+  if (followerId === followingId) throw new Error("Cannot follow yourself");
+  const exists = await UserFollower.findOne({
+    where: { followerId, followingId },
+  });
+  if (exists) throw new Error("Already following");
+  await UserFollower.create({ followerId, followingId });
+  return { message: "Subscribed successfully" };
+};
+
+const unsubscribe = async (followerId, followingId) => {
+  if (followerId === followingId) throw new Error("Cannot follow yourself");
+  const exists = await UserFollower.findOne({
+    where: { followerId, followingId },
+  });
+  if (exists) throw new Error("Already following");
+  await UserFollower.destroy({ followerId, followingId });
+  return { message: "Subscribed successfully" };
+};
+
+const updateUser = async (filter, data) => {
   const user = await findUser(filter);
   if (user) {
     await user.update(data);
     await user.save();
   }
   return user;
+};
+
+export default {
+  findUser,
+  getUserDetails,
+  updateUser,
+  getFollowers,
+  getFollowings,
+  subscribe,
+  unsubscribe,
 };

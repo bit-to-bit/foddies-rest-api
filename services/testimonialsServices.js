@@ -6,12 +6,12 @@ export const listTestimonials = async ({ limit = 1, offset = 0 }) => {
     include: [
       {
         model: User,
-        as: 'author',
-        attributes: ['name'],
+        as: "author",
+        attributes: ["name"],
       },
     ],
-    attributes: ['id', 'testimonial', 'createdAt', 'ownerId'],
-    order: [['createdAt', 'DESC']],
+    attributes: ["id", "testimonial", "createdAt", "ownerId"],
+    order: [["createdAt", "DESC"]],
     limit,
     offset,
   });
