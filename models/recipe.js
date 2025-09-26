@@ -37,8 +37,17 @@ Recipe.associate = (models) => {
     as: "ingredients",
   });
 
+  Recipe.belongsToMany(models.Ingredient, {
+    through: models.RecipeIngredient,
+    foreignKey: "recipeId",
+    otherKey: "ingredientId",
+    as: "ingredientsFilter",
+  });
+
   Recipe.hasMany(models.RecipeIngredient, {
     foreignKey: "recipeId",
     as: "recipeIngredients",
   });
+
+  Recipe.hasMany(models.Favorite, { foreignKey: "recipeId", as: "favorites" });
 };

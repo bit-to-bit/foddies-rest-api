@@ -6,6 +6,10 @@ import {
   addRecipe,
   removeRecipe,
   fetchOwnRecipes,
+  addRecipeToFavorite,
+  deleteRecipeFromFavorite,
+  fetchFavoriteRecipes,
+  fetchPopularRecipes,
 } from "../controllers/recipesControllers.js";
 import { authenticate } from "../middlewares/authenticate.js";
 import validateBody from "../middlewares/validateBody.js";
@@ -16,6 +20,8 @@ const recipeRouter = express.Router();
 
 recipeRouter.get("/", getRecipes);
 recipeRouter.get("/me", authenticate, fetchOwnRecipes);
+recipeRouter.get("/favorite", authenticate, fetchFavoriteRecipes);
+recipeRouter.get("/popular", fetchPopularRecipes);
 recipeRouter.get("/:id", getRecipeDetails);
 recipeRouter.post(
   "/",
@@ -24,5 +30,7 @@ recipeRouter.post(
   addRecipe
 );
 recipeRouter.delete("/:id", authenticate, removeRecipe);
+recipeRouter.post("/:id/favorite", authenticate, addRecipeToFavorite);
+recipeRouter.delete("/:id/favorite", authenticate, deleteRecipeFromFavorite);
 
 export default recipeRouter;

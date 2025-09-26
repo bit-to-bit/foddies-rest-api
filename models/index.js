@@ -1,5 +1,6 @@
 import { Area } from "./area.js";
 import { Category } from "./category.js";
+import { Favorite } from "./favorite.js";
 import { Ingredient } from "./ingredient.js";
 import { Recipe } from "./recipe.js";
 import { RecipeIngredient } from "./recipeIngredient.js";
@@ -16,6 +17,7 @@ const models = {
   RecipeIngredient,
   Testimonial,
   UserFollower,
+  Favorite,
 };
 
 Object.values(models).forEach((m) => {

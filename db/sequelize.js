@@ -38,9 +38,7 @@ async function runMigrations() {
   const queryInterface = sequelize.getQueryInterface();
   const umzug = new Umzug({
     migrations: {
-      glob: path
-        .join(__dirname, "..", "migrations", "*.js")
-        .replace(/\\/g, "/"),
+      glob: path.join(__dirname, "..", "migrations", "*.js"),
     },
     context: { queryInterface, DataTypes: Sequelize.DataTypes },
     storage: new SequelizeStorage({ sequelize }),

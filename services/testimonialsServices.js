@@ -6,7 +6,7 @@ export const listTestimonials = async ({ limit = 1, offset = 0 }) => {
     include: [
       {
         model: User,
-        as: "author",
+        as: "owner",
         attributes: ["name"],
       },
     ],
