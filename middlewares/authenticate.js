@@ -1,5 +1,6 @@
 import "dotenv/config";
-import { User } from "../db/User.js";
+import models from "../models/index.js";
+const { User } = models;
 import httpError from "../helpers/httpError.js";
 import { verifyToken } from "../helpers/jwt.js";
 
