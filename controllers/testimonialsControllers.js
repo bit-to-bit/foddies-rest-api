@@ -27,6 +27,7 @@ export const getTestimonials = async (req, res, next) => {
         })),
         total: count,
         page,
+        totalPages: Math.ceil(count / limit),
         limit,
       },
     });
