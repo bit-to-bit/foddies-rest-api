@@ -1,4 +1,5 @@
 import { DataTypes } from "sequelize";
+
 import { sequelize } from "./sequelize.js";
 
 const Recipe = sequelize.define("recipe", {

@@ -1,8 +1,8 @@
-import { listTestimonials } from '../services/testimonialsServices.js';
+import { listTestimonials } from "../services/testimonialsServices.js";
 
 export const getTestimonials = async (req, res, next) => {
   try {
-    const { limit: limitRaw = '1', page: pageRaw = '1' } = req.query;
+    const { limit: limitRaw = "1", page: pageRaw = "1" } = req.query;
 
     let limit = parseInt(limitRaw, 10);
     if (Number.isNaN(limit) || limit < 1) limit = 1;
@@ -17,12 +17,12 @@ export const getTestimonials = async (req, res, next) => {
 
     res.json({
       status: 200,
-      message: 'Testimonials retrieved successfully',
+      message: "Testimonials retrieved successfully",
       data: {
         items: rows.map((t) => ({
           id: t.id,
           testimonial: t.testimonial,
-          authorName: t.author?.name ?? 'Anonymous',
+          authorName: t.author?.name ?? "Anonymous",
           createdAt: t.createdAt,
         })),
         total: count,

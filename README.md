@@ -1,6 +1,7 @@
 # Foddies REST API
 
 ## Environment Variables
+
 Create a `.env` file in the root of the project with the following variables:
 
 ```env
@@ -16,6 +17,7 @@ JWT_SECRET=jwt_secret_key
 ```
 
 ## Installation
+
 ```bash
 npm install
 ```
@@ -23,11 +25,13 @@ npm install
 ## Running the Project
 
 Start:
+
 ```bash
 npm start
 ```
 
 Start in development mode:
+
 ```bash
 npm run dev
 ```
@@ -35,6 +39,7 @@ npm run dev
 ## Health Check
 
 Check if the server is running:
+
 ```http
 GET http://localhost:3000/api/health/ping
 ```
@@ -42,11 +47,13 @@ GET http://localhost:3000/api/health/ping
 ## Linting & Formatting
 
 Run lint check:
+
 ```bash
 npm run lint
 ```
 
 Automatically fix issues (must be run **before every push**):
+
 ```bash
 npm run lint:fix
 ```

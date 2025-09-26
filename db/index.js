@@ -1,12 +1,12 @@
 // file for relations between models
-import Recipe from "./Recipe.js";
-
-import Category from "./Categorie.js";
-import { Area } from "./Area.js";
-import { Ingredient } from "./Ingredient.js";
-import { User } from "./User.js";
-import RecipeIngredientMeasure from "./RecipeIngredientMeasure.js";
 import e from "express";
+
+import { Area } from "./Area.js";
+import { Category } from "./Categorie.js";
+import { Ingredient } from "./Ingredient.js";
+import Recipe from "./Recipe.js";
+import RecipeIngredientMeasure from "./RecipeIngredientMeasure.js";
+import { User } from "./User.js";
 
 // Recipe - Category
 Category.hasMany(Recipe, { foreignKey: "categoryId", as: "recipes" });

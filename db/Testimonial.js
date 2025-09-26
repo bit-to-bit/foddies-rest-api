@@ -1,9 +1,10 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from './sequelize.js';
-import { User } from './User.js';
+import { DataTypes } from "sequelize";
+
+import { sequelize } from "./sequelize.js";
+import { User } from "./User.js";
 
 export const Testimonial = sequelize.define(
-  'Testimonial',
+  "Testimonial",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -20,10 +21,10 @@ export const Testimonial = sequelize.define(
     },
   },
   {
-    tableName: 'testimonials',
+    tableName: "testimonials",
     timestamps: true,
     updatedAt: false,
   }
 );
 
-Testimonial.belongsTo(User, { foreignKey: 'ownerId', as: 'author' });
+Testimonial.belongsTo(User, { foreignKey: "ownerId", as: "author" });
