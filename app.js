@@ -1,12 +1,10 @@
-import cors from "cors";
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
 import path from "path";
-import swaggerUi from "swagger-ui-express";
-
 import "dotenv/config";
 import "./db/sequelize.js";
-
+import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./helpers/swagger.js";
 import areasRouter from "./routes/areasRouter.js";
 import authRouter from "./routes/authRouter.js";
@@ -16,6 +14,7 @@ import ingredientsRouter from "./routes/ingredientsRouter.js";
 import recipesRouter from "./routes/recipesRouter.js";
 import testimonialsRouter from "./routes/testimonialsRouter.js";
 import usersRouter from "./routes/usersRouter.js";
+
 const { APP_PORT = 3000 } = process.env;
 
 const app = express();
@@ -34,7 +33,9 @@ app.use("/api/ingredients", ingredientsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/areas", areasRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/testimonials", testimonialsRouter);
 app.use("/api/recipes", recipesRouter);
+
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
 });

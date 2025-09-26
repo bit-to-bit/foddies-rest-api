@@ -1,5 +1,5 @@
-import { Testimonial } from "../db/Testimonial.js";
-import { User } from "../db/User.js";
+import models from "../models/index.js";
+const { User, Testimonial } = models;
 
 export const listTestimonials = async ({ limit = 1, offset = 0 }) => {
   return Testimonial.findAndCountAll({

@@ -1,6 +1,7 @@
-import { Op } from "sequelize";
 
-import { Ingredient } from "../db/Ingredient.js";
+import { Op } from 'sequelize';
+import models from "../models/index.js";
+const { Ingredient } = models;
 
 export const listIngredients = async ({ search, limit = 10, offset = 0 }) => {
   const where = search ? { name: { [Op.iLike]: `${search}%` } } : {};
