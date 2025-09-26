@@ -1,16 +1,11 @@
-import { Op } from "sequelize";
+import models from "../models/index.js";
 
-import {
-  Recipe,
-  Category,
-  Area,
-  Ingredient,
-  User,
-  RecipeIngredientMeasure,
-} from "../db/index.js";
+import e from "express";
+import { Op } from "sequelize";
+const { Recipe, Category, Area, Ingredient, User, RecipeIngredient } = models;
+
 import { sequelize } from "../db/sequelize.js";
 import httpError from "../helpers/httpError.js";
-import e from "express";
 
 export const recipeDetails = (filters = {}) => {
   const { category, area, ingredient } = filters;
@@ -57,66 +52,13 @@ export const getAllRecipes = async ({
 }) => {
   const offset = (page - 1) * limit;
   const include = recipeDetails({ category, area, ingredient });
-  // const include = [];
 
-  // if (category) {
-  //   include.push({
-  //     model: Category,
-  //     as: "category",
-  //     attributes: ["name"],
-  //     where: { name: { [Op.iLike]: `%${category}%` } },
-  //     required: true,
-  //   });
-  // } else {
-  //   include.push({
-  //     model: Category,
-  //     as: "category",
-  //     attributes: ["name"],
-  //   });
-  // }
-
-  // if (area) {
-  //   include.push({
-  //     model: Area,
-  //     as: "area",
-  //     attributes: ["name"],
-  //     where: { name: { [Op.iLike]: `%${area}%` } },
-  //     required: true,
-  //   });
-  // } else {
-  //   include.push({
-  //     model: Area,
-  //     as: "area",
-  //     attributes: ["name"],
-  //   });
-  // }
-
-  // if (ingredient) {
-  //   include.push({
-  //     model: Ingredient,
-  //     as: "ingredients",
-  //     attributes: ["name"],
-  //     through: { attributes: [] },
-  //     where: { name: { [Op.iLike]: `%${ingredient}%` } },
-  //     required: true,
-  //   });
-  // } else {
-  //   include.push({
-  //     model: Ingredient,
-  //     as: "ingredients",
-  //     attributes: ["name"],
-  //     through: { attributes: [] },
-  //   });
-  // }
-
-  // Підрахунок загальної кількості рецептів з урахуванням фільтрів
   const total = await Recipe.count({
     include,
     distinct: true,
     col: "id",
   });
 
-  // Отримання рецептів з фільтрацією та пагінацією
   const recipes = await Recipe.findAll({
     include,
     limit,
@@ -133,9 +75,6 @@ export const getAllRecipes = async ({
     totalPages: Math.ceil(total / limit),
   };
 };
-
-// const result = await getAllRecipes({ category: "Beef" });
-// console.log(result);
 
 export const getRecipeById = async (id) => {
   const recipe = await Recipe.findByPk(id, {
@@ -156,7 +95,7 @@ export const createRecipe = async (data) => {
         ingredientId: item.ingredientId,
         measure: item.measure,
       }));
-      await RecipeIngredientMeasure.bulkCreate(ingredientMeasures, {
+      await RecipeIngredient.bulkCreate(ingredientMeasures, {
         transaction,
       });
     }
@@ -176,10 +115,7 @@ export const deleteRecipe = async (recipeId, ownerId) => {
     if (!recipe) {
       throw httpError(404, "Recipe not found or you are not the owner");
     }
-    await RecipeIngredientMeasure.destroy(
-      { where: { recipeId } },
-      { transaction }
-    );
+    await RecipeIngredient.destroy({ where: { recipeId } }, { transaction });
     await Recipe.destroy({ where: { id: recipeId } }, { transaction });
     await transaction.commit();
     return recipe;

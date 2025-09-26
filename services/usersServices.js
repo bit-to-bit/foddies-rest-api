@@ -1,8 +1,8 @@
-
 import bcrypt from "bcrypt";
-import models from "../models/index.js";
+
 import { getDefaultAvatarUrl } from "../helpers/avatar.js";
 import { generateUserId } from "../helpers/idGenerator.js";
+import models from "../models/index.js";
 const { User } = models;
 
 export const findUser = async (filter) => await User.findOne({ where: filter });

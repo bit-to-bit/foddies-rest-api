@@ -1,8 +1,9 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../db/sequelize.js';
+import { DataTypes } from "sequelize";
+
+import { sequelize } from "../db/sequelize.js";
 
 export const Testimonial = sequelize.define(
-  'testimonial',
+  "testimonial",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     ownerId: { type: DataTypes.INTEGER, allowNull: true },
@@ -10,10 +11,10 @@ export const Testimonial = sequelize.define(
   },
   {
     timestamps: true,
-    tableName: 'testimonials',
+    tableName: "testimonials",
   }
 );
 
 Testimonial.associate = (models) => {
-  Testimonial.belongsTo(models.User, { foreignKey: 'ownerId', as: 'owner' });
+  Testimonial.belongsTo(models.User, { foreignKey: "ownerId", as: "owner" });
 };

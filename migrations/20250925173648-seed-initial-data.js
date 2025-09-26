@@ -1,24 +1,24 @@
-'use strict';
+"use strict";
 
-import fs from 'fs/promises';
-import path from 'path';
+import fs from "fs/promises";
+import path from "path";
 
 function safeParseJSON(text) {
-  const cleaned = text.replace(/,\s*]/g, ']').replace(/,\s*}/g, '}');
+  const cleaned = text.replace(/,\s*]/g, "]").replace(/,\s*}/g, "}");
   return JSON.parse(cleaned);
 }
 
 function extractId(obj) {
   if (!obj) return null;
-  if (typeof obj === 'string') return obj;
+  if (typeof obj === "string") return obj;
   if (obj.$oid) return obj.$oid;
   if (obj.$id) return obj.$id;
   return JSON.stringify(obj);
 }
 
 async function readSeed(fileName) {
-  const p = path.join(process.cwd(), 'seeders', 'data', fileName);
-  const raw = await fs.readFile(p, 'utf8');
+  const p = path.join(process.cwd(), "seeders", "data", fileName);
+  const raw = await fs.readFile(p, "utf8");
   return safeParseJSON(raw);
 }
 
@@ -33,25 +33,51 @@ async function tableHasColumn(queryInterface, tableName, columnName) {
 
 export async function up({ context }) {
   const sequelize = context.sequelize ?? context.queryInterface?.sequelize;
-  const queryInterface = context.queryInterface ?? (sequelize && sequelize.getQueryInterface && sequelize.getQueryInterface());
+  const queryInterface =
+    context.queryInterface ??
+    (sequelize && sequelize.getQueryInterface && sequelize.getQueryInterface());
   if (!sequelize || !queryInterface) {
-    throw new Error('Migration context does not contain sequelize or queryInterface.');
+    throw new Error(
+      "Migration context does not contain sequelize or queryInterface."
+    );
   }
 
-  const [usersSrc, areasSrc, categoriesSrc, ingredientsSrc, recipesSrc, testimonialsSrc] =
-    await Promise.all([
-      readSeed('users.json'),
-      readSeed('areas.json'),
-      readSeed('categories.json'),
-      readSeed('ingredients.json'),
-      readSeed('recipes.json'),
-      readSeed('testimonials.json'),
-    ]);
+  const [
+    usersSrc,
+    areasSrc,
+    categoriesSrc,
+    ingredientsSrc,
+    recipesSrc,
+    testimonialsSrc,
+  ] = await Promise.all([
+    readSeed("users.json"),
+    readSeed("areas.json"),
+    readSeed("categories.json"),
+    readSeed("ingredients.json"),
+    readSeed("recipes.json"),
+    readSeed("testimonials.json"),
+  ]);
 
-  const recipeIngredientsHasCreatedAt = await tableHasColumn(queryInterface, 'recipe_ingredients', 'createdAt');
-  const recipeIngredientsHasUpdatedAt = await tableHasColumn(queryInterface, 'recipe_ingredients', 'updatedAt');
-  const userFollowersHasCreatedAt = await tableHasColumn(queryInterface, 'user_followers', 'createdAt');
-  const userFollowersHasUpdatedAt = await tableHasColumn(queryInterface, 'user_followers', 'updatedAt');
+  const recipeIngredientsHasCreatedAt = await tableHasColumn(
+    queryInterface,
+    "recipe_ingredients",
+    "createdAt"
+  );
+  const recipeIngredientsHasUpdatedAt = await tableHasColumn(
+    queryInterface,
+    "recipe_ingredients",
+    "updatedAt"
+  );
+  const userFollowersHasCreatedAt = await tableHasColumn(
+    queryInterface,
+    "user_followers",
+    "createdAt"
+  );
+  const userFollowersHasUpdatedAt = await tableHasColumn(
+    queryInterface,
+    "user_followers",
+    "updatedAt"
+  );
 
   const transaction = await sequelize.transaction();
   try {
@@ -132,7 +158,13 @@ export async function up({ context }) {
         RETURNING id
       `;
       const [rows] = await sequelize.query(insertSql, {
-        replacements: { name, description, img, createdAt: now, updatedAt: now },
+        replacements: {
+          name,
+          description,
+          img,
+          createdAt: now,
+          updatedAt: now,
+        },
         transaction,
       });
       const newId = rows[0].id;
@@ -154,7 +186,12 @@ export async function up({ context }) {
           VALUES (:ownerId, :testimonial, :createdAt, :updatedAt)
         `;
         await sequelize.query(insertSql, {
-          replacements: { ownerId, testimonial, createdAt: now, updatedAt: now },
+          replacements: {
+            ownerId,
+            testimonial,
+            createdAt: now,
+            updatedAt: now,
+          },
           transaction,
         });
       }
@@ -208,7 +245,7 @@ export async function up({ context }) {
 
       let areaId = null;
       if (r.area) {
-        if (typeof r.area === 'string') {
+        if (typeof r.area === "string") {
           areaId = await ensureAreaByName(r.area);
         } else {
           const areaOld = extractId(r.area?._id ?? r.area);
@@ -218,7 +255,7 @@ export async function up({ context }) {
 
       let categoryId = null;
       if (r.category) {
-        if (typeof r.category === 'string') {
+        if (typeof r.category === "string") {
           categoryId = await ensureCategoryByName(r.category);
         } else {
           const catOld = extractId(r.category?._id ?? r.category);
@@ -265,26 +302,29 @@ export async function up({ context }) {
 
           if (recipeIngredientsHasCreatedAt || recipeIngredientsHasUpdatedAt) {
             const cols = ['"recipeId"', '"ingredientId"', '"measure"'];
-            const vals = [':recipeId', ':ingredientId', ':measure'];
+            const vals = [":recipeId", ":ingredientId", ":measure"];
             const repls = { recipeId, ingredientId, measure };
 
             if (recipeIngredientsHasCreatedAt) {
               cols.push('"createdAt"');
-              vals.push(':createdAt');
+              vals.push(":createdAt");
               repls.createdAt = now;
             }
             if (recipeIngredientsHasUpdatedAt) {
               cols.push('"updatedAt"');
-              vals.push(':updatedAt');
+              vals.push(":updatedAt");
               repls.updatedAt = now;
             }
 
             const insertRiSql = `
-              INSERT INTO "recipe_ingredients" (${cols.join(',')})
-              VALUES (${vals.join(',')})
+              INSERT INTO "recipe_ingredients" (${cols.join(",")})
+              VALUES (${vals.join(",")})
               ON CONFLICT DO NOTHING
             `;
-            await sequelize.query(insertRiSql, { replacements: repls, transaction });
+            await sequelize.query(insertRiSql, {
+              replacements: repls,
+              transaction,
+            });
           } else {
             const insertRiSql = `
               INSERT INTO "recipe_ingredients" ("recipeId","ingredientId","measure")
@@ -312,27 +352,30 @@ export async function up({ context }) {
           if (followerUserId && followingId) {
             if (userFollowersHasCreatedAt || userFollowersHasUpdatedAt) {
               const cols = ['"followerId"', '"followingId"'];
-              const vals = [':followerId', ':followingId'];
+              const vals = [":followerId", ":followingId"];
               const repls = { followerId: followerUserId, followingId };
 
               const now = new Date();
               if (userFollowersHasCreatedAt) {
                 cols.push('"createdAt"');
-                vals.push(':createdAt');
+                vals.push(":createdAt");
                 repls.createdAt = now;
               }
               if (userFollowersHasUpdatedAt) {
                 cols.push('"updatedAt"');
-                vals.push(':updatedAt');
+                vals.push(":updatedAt");
                 repls.updatedAt = now;
               }
 
               const insertSql = `
-                INSERT INTO "user_followers" (${cols.join(',')})
-                VALUES (${vals.join(',')})
+                INSERT INTO "user_followers" (${cols.join(",")})
+                VALUES (${vals.join(",")})
                 ON CONFLICT DO NOTHING
               `;
-              await sequelize.query(insertSql, { replacements: repls, transaction });
+              await sequelize.query(insertSql, {
+                replacements: repls,
+                transaction,
+              });
             } else {
               const insertSql = `
                 INSERT INTO "user_followers" ("followerId","followingId")
@@ -356,27 +399,30 @@ export async function up({ context }) {
           if (followerIdVal && followingId) {
             if (userFollowersHasCreatedAt || userFollowersHasUpdatedAt) {
               const cols = ['"followerId"', '"followingId"'];
-              const vals = [':followerId', ':followingId'];
+              const vals = [":followerId", ":followingId"];
               const repls = { followerId: followerIdVal, followingId };
 
               const now = new Date();
               if (userFollowersHasCreatedAt) {
                 cols.push('"createdAt"');
-                vals.push(':createdAt');
+                vals.push(":createdAt");
                 repls.createdAt = now;
               }
               if (userFollowersHasUpdatedAt) {
                 cols.push('"updatedAt"');
-                vals.push(':updatedAt');
+                vals.push(":updatedAt");
                 repls.updatedAt = now;
               }
 
               const insertSql = `
-                INSERT INTO "user_followers" (${cols.join(',')})
-                VALUES (${vals.join(',')})
+                INSERT INTO "user_followers" (${cols.join(",")})
+                VALUES (${vals.join(",")})
                 ON CONFLICT DO NOTHING
               `;
-              await sequelize.query(insertSql, { replacements: repls, transaction });
+              await sequelize.query(insertSql, {
+                replacements: repls,
+                transaction,
+              });
             } else {
               const insertSql = `
                 INSERT INTO "user_followers" ("followerId","followingId")
@@ -402,9 +448,13 @@ export async function up({ context }) {
 
 export async function down({ context }) {
   const sequelize = context.sequelize ?? context.queryInterface?.sequelize;
-  const queryInterface = context.queryInterface ?? (sequelize && sequelize.getQueryInterface && sequelize.getQueryInterface());
+  const queryInterface =
+    context.queryInterface ??
+    (sequelize && sequelize.getQueryInterface && sequelize.getQueryInterface());
   if (!sequelize || !queryInterface) {
-    throw new Error('Migration context does not contain sequelize or queryInterface.');
+    throw new Error(
+      "Migration context does not contain sequelize or queryInterface."
+    );
   }
 
   const transaction = await sequelize.transaction();
@@ -417,12 +467,12 @@ export async function down({ context }) {
       recipesSrc,
       testimonialsSrc,
     ] = await Promise.all([
-      readSeed('users.json'),
-      readSeed('areas.json'),
-      readSeed('categories.json'),
-      readSeed('ingredients.json'),
-      readSeed('recipes.json'),
-      readSeed('testimonials.json'),
+      readSeed("users.json"),
+      readSeed("areas.json"),
+      readSeed("categories.json"),
+      readSeed("ingredients.json"),
+      readSeed("recipes.json"),
+      readSeed("testimonials.json"),
     ]);
 
     const userEmails = usersSrc.map((u) => u.email).filter(Boolean);
@@ -430,7 +480,9 @@ export async function down({ context }) {
     const categoryNames = categoriesSrc.map((c) => c.name).filter(Boolean);
     const ingredientNames = ingredientsSrc.map((i) => i.name).filter(Boolean);
     const recipeTitles = recipesSrc.map((r) => r.title).filter(Boolean);
-    const testimonialTexts = testimonialsSrc.map((t) => t.testimonial).filter(Boolean);
+    const testimonialTexts = testimonialsSrc
+      .map((t) => t.testimonial)
+      .filter(Boolean);
 
     if (userEmails.length) {
       await sequelize.query(

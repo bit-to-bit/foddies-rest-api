@@ -1,5 +1,5 @@
-import { Recipe } from "../db/index.js";
 import httpError from "../helpers/httpError.js";
+import { Recipe } from "../models/recipe.js";
 import {
   getAllRecipes,
   getRecipeById,
