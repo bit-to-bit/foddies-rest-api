@@ -13,7 +13,7 @@ import authRouter from "./routes/authRouter.js";
 import categoriesRouter from "./routes/categoriesRouter.js";
 import healthRouter from "./routes/healthRouter.js";
 import ingredientsRouter from "./routes/ingredientsRouter.js";
-import testimonialsRouter from './routes/testimonialsRouter.js';
+import testimonialsRouter from "./routes/testimonialsRouter.js";
 import usersRouter from "./routes/usersRouter.js";
 
 const { APP_PORT = 3000 } = process.env;
