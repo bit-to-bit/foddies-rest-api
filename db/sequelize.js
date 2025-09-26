@@ -1,4 +1,3 @@
-
 import { Sequelize } from "sequelize";
 import { Umzug, SequelizeStorage } from "umzug";
 import path from "path";
@@ -23,7 +22,7 @@ export const sequelize = new Sequelize({
   password: DATABASE_PASSWORD,
   host: DATABASE_HOST,
   port: DATABASE_PORT,
-  dialectOptions: { ssl: false },
+  dialectOptions: { ssl: true },
 });
 
 try {

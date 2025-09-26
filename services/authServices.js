@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import gravatar from "gravatar";
+import createError from "http-errors";
 import models from "../models/index.js";
 import { findUser } from "../middlewares/authenticate.js";
-import httpError from "../helpers/httpError.js";
 import { createToken } from "../helpers/jwt.js";
 const { User } = models;
 
@@ -26,10 +26,11 @@ export const loginUser = async (payload) => {
   const { email, password } = payload;
   const user = await findUser({ email });
 
-  if (!user) throw new httpError(401, "Email or password is wrong!");
+  if (!user) throw new createError.Unauthorized("Email or password is wrong!");
 
   const comparePassword = await bcrypt.compare(password, user.password);
-  if (!comparePassword) throw new httpError(401, "Email or password is wrong!");
+  if (!comparePassword)
+    throw new createError.Unauthorized("Email or password is wrong!");
   const tokenPayload = {
     id: user.id,
   };
@@ -39,7 +40,7 @@ export const loginUser = async (payload) => {
 
   return {
     token: token,
-    user: { username: user.username, email, avatarURL: user.avatarURL },
+    user: { name: user.name, email, avatarURL: user.avatarURL },
   };
 };
 
