@@ -14,6 +14,16 @@ const getUserDetails = async (req, res, next) => {
   }
 };
 
+const updateUserAvatarController = async (req, res, next) => {
+    try {
+        const resault = await usersServices.updateAvatar(req.params.id, req.file);
+        return res.status(200).json(resault);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export default {
-  getUserDetails,
+    getUserDetails,
+    updateUserAvatarController,
 };
