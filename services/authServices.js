@@ -27,10 +27,10 @@ export const loginUser = async (payload) => {
   const { email, password } = payload;
   const user = await usersServices.findUser({ email });
 
-  if (!user) throw new httpError(401, "Email or password is wrong!");
+  if (!user) throw httpError(401, "Email or password is wrong!");
 
   const comparePassword = await bcrypt.compare(password, user.password);
-  if (!comparePassword) throw new httpError(401, "Email or password is wrong!");
+  if (!comparePassword) throw httpError(401, "Email or password is wrong!");
   const tokenPayload = {
     id: user.id,
   };

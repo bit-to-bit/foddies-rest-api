@@ -5,16 +5,25 @@ import {
   loginController,
   logoutController,
 } from "../controllers/authControllers.js";
+import controllerWrapper from "../helpers/controllerWrapper.js";
 import authenticate from "../middlewares/authenticate.js";
 import validateBody from "../middlewares/validateBody.js";
 import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/register", validateBody(registerSchema), registerController);
+authRouter.post(
+  "/register",
+  validateBody(registerSchema),
+  controllerWrapper(registerController)
+);
 
-authRouter.post("/login", validateBody(loginSchema), loginController);
+authRouter.post(
+  "/login",
+  validateBody(loginSchema),
+  controllerWrapper(loginController)
+);
 
-authRouter.get("/logout", authenticate, logoutController);
+authRouter.get("/logout", authenticate, controllerWrapper(logoutController));
 
 export default authRouter;

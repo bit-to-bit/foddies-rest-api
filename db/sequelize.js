@@ -22,7 +22,7 @@ export const sequelize = new Sequelize({
   password: DATABASE_PASSWORD,
   host: DATABASE_HOST,
   port: DATABASE_PORT,
-  dialectOptions: { ssl: true },
+  dialectOptions: { ssl: false },
 });
 
 try {
