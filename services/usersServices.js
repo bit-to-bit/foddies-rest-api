@@ -29,22 +29,46 @@ const getUserDetails = async (filter) => {
   };
 };
 
-const getFollowers = async (id) => {
+const getFollowers = async (id, page = 1, limit = 8) => {
   const user = await User.findByPk(id);
   if (!user) {
     return null;
   }
-  const followers = await user.getFollowers();
-  return followers;
+  const offset = (page - 1) * limit;
+  const total = await user.countFollowers();
+  const followers = await user.getFollowers({
+    offset,
+    limit,
+    order: [["id", "ASC"]],
+  });
+  return {
+    followers,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
 };
 
-const getFollowings = async (id) => {
+const getFollowings = async (id, page = 1, limit = 8) => {
   const user = await User.findByPk(id);
   if (!user) {
     return null;
   }
-  const followings = await user.getFollowing();
-  return followings;
+  const offset = (page - 1) * limit;
+  const total = await user.countFollowing();
+  const followings = await user.getFollowing({
+    offset,
+    limit,
+    order: [["id", "ASC"]],
+  });
+  return {
+    followings,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
 };
 
 const subscribe = async (followerId, followingId) => {

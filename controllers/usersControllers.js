@@ -33,7 +33,12 @@ const updateAvatar = async (req, res) => {
 
 const getFollowers = async (req, res) => {
   const { id } = req.params;
-  const result = await usersServices.getFollowers(id);
+  const { page = 1, limit = 8 } = req.query;
+  const result = await usersServices.getFollowers(
+    id,
+    Number(page),
+    Number(limit)
+  );
   if (!result) {
     throw httpError(404, `User with id = ${id} not found`);
   }
@@ -42,7 +47,12 @@ const getFollowers = async (req, res) => {
 
 const getFollowings = async (req, res) => {
   const { id } = req.user;
-  const result = await usersServices.getFollowings(id);
+  const { page = 1, limit = 8 } = req.query;
+  const result = await usersServices.getFollowings(
+    id,
+    Number(page),
+    Number(limit)
+  );
   if (!result) {
     throw httpError(404, `User with id = ${id} not found`);
   }
