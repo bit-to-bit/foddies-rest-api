@@ -11,7 +11,7 @@ import {
   fetchFavoriteRecipes,
   fetchPopularRecipes,
 } from "../controllers/recipesControllers.js";
-import { authenticate } from "../middlewares/authenticate.js";
+import authenticate from "../middlewares/authenticate.js";
 import validateBody from "../middlewares/validateBody.js";
 import { createRecipeSchema } from "../schemas/recipesSchemas.js";
 const recipeRouter = express.Router();

@@ -1,62 +1,137 @@
-import bcrypt from "bcrypt";
-
-import { getDefaultAvatarUrl } from "../helpers/avatar.js";
-import { generateUserId } from "../helpers/idGenerator.js";
 import fs from "node:fs/promises";
+
 import cloudinary from "../helpers/cloudinary.js";
 import models from "../models/index.js";
-const { User } = models;
 
-export const findUser = async (filter) => await User.findOne({ where: filter });
+const { User, UserFollower, Recipe } = models;
 
-export const getUserDetails = async (filter) => {
-  const user = await findUser(filter);
+const findUser = async (filter) => await User.findOne({ where: filter });
+
+const getUserDetails = async (filter) => {
+  const user = await User.findOne({
+    attributes: ["id", "name", "email", "avatar"],
+    where: filter,
+  });
   if (!user) {
     return null;
   }
-  // TODO: Refactor this function after creating reciepes and follovers entities
-  return { ...user.get(), recipesAmount: 0, followersAmount: 0 };
+  const recipesAmount = await Recipe.count({ where: { ownerId: user.id } });
+  // TODO: add favorite recipes relation in DB and fix:
+  const favoriteRecipesAmount = 0;
+  const followersAmount = await user.countFollowers();
+  const followingsAmount = await user.countFollowing();
+  return {
+    ...user.dataValues,
+    recipesAmount,
+    favoriteRecipesAmount,
+    followersAmount,
+    followingsAmount,
+  };
 };
 
-export const createUser = async (data) => {
-  const { password, id = generateUserId() } = data;
-  const hashPassword = await bcrypt.hash(password, 10);
-  const avatar = getDefaultAvatarUrl();
-  return User.create({ ...data, password: hashPassword, avatarURL: avatar });
+const getFollowers = async (id, page = 1, limit = 8) => {
+  const user = await User.findByPk(id);
+  if (!user) {
+    return null;
+  }
+  const offset = (page - 1) * limit;
+  const total = await user.countFollowers();
+  const followers = await user.getFollowers({
+    offset,
+    limit,
+    order: [["id", "ASC"]],
+  });
+  return {
+    followers,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
 };
 
-export const updateUser = async (filter, data) => {
+const getFollowings = async (id, page = 1, limit = 8) => {
+  const user = await User.findByPk(id);
+  if (!user) {
+    return null;
+  }
+  const offset = (page - 1) * limit;
+  const total = await user.countFollowing();
+  const followings = await user.getFollowing({
+    offset,
+    limit,
+    order: [["id", "ASC"]],
+  });
+  return {
+    followings,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
+};
+
+const subscribe = async (followerId, followingId) => {
+  if (followerId === followingId) throw new Error("Cannot follow yourself");
+  const exists = await UserFollower.findOne({
+    where: { followerId, followingId },
+  });
+  if (exists) throw new Error("Already following");
+  await UserFollower.create({ followerId, followingId });
+  return { message: "Subscribed successfully" };
+};
+
+const getSubscription = async (followerId, followingId) => {
+  const subscription = await UserFollower.findOne({
+    where: { followerId, followingId },
+  });
+  return subscription || null;
+};
+
+const unsubscribe = async (followerId, followingId) => {
+  const subscription = await getSubscription(followerId, followingId);
+  if (subscription) {
+    await subscription.destroy();
+  }
+  return subscription || null;
+};
+
+const updateAvatar = async (id, file) => {
+  const user = await User.findByPk(id);
+  if (!user) return null;
+
+  let avatar = user.avatar;
+
+  if (file) {
+    const { url } = await cloudinary.uploader.upload(file.path, {
+      folder: "foodies/avatars",
+      use_filename: true,
+    });
+    avatar = url;
+    await fs.unlink(file.path);
+    await user.update({ avatar });
+  }
+
+  return { avatar };
+};
+
+const updateUser = async (filter, data) => {
   const user = await findUser(filter);
   if (user) {
     await user.update(data);
     await user.save();
   }
   return user;
-}
+};
 
-export const updateAvatar = async (id, file) => {
-    const user = await User.findByPk(id);
-
-    // TODO: Uncomment when authentication will work
-    // if (!user) {
-    //     throw HttpError(401, "Not authorized");
-    // }
-
-    if (!file) throw HttpError(400, "Avatar file is required");
-
-    let avatar = null;
-
-    if (file) {
-        const { url } = await cloudinary.uploader.upload(file.path, {
-            folder: "foodies/avatars",
-            use_filename: true,
-        });
-        avatar = url;
-        await fs.unlink(file.path);
-    }
-
-    await user.update({ avatar: avatar });
-    return {
-        avatar: user.avatar,
-    };
+export default {
+  findUser,
+  getUserDetails,
+  updateUser,
+  getFollowers,
+  getFollowings,
+  getSubscription,
+  subscribe,
+  unsubscribe,
+  updateAvatar,
 };
