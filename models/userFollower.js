@@ -1,14 +1,19 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../db/sequelize.js';
+import { DataTypes } from "sequelize";
+
+import { sequelize } from "../db/sequelize.js";
 
 export const UserFollower = sequelize.define(
-  'userFollower',
+  "userFollower",
   {
     followerId: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
-    followingId: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
+    followingId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+    },
   },
   {
-    tableName: 'user_followers',
+    tableName: "user_followers",
     timestamps: false,
   }
 );

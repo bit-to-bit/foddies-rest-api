@@ -1,76 +1,92 @@
-[{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f8a"
+[
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f8a"
+    },
+    "name": "Seafood"
   },
-  "name": "Seafood"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f8b"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f8b"
+    },
+    "name": "Lamb"
   },
-  "name": "Lamb"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f8c"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f8c"
+    },
+    "name": "Starter"
   },
-  "name": "Starter"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f8d"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f8d"
+    },
+    "name": "Chicken"
   },
-  "name": "Chicken"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f8e"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f8e"
+    },
+    "name": "Beef"
   },
-  "name": "Beef"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f8f"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f8f"
+    },
+    "name": "Dessert"
   },
-  "name": "Dessert"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f90"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f90"
+    },
+    "name": "Vegan"
   },
-  "name": "Vegan"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f91"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f91"
+    },
+    "name": "Pork"
   },
-  "name": "Pork"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f92"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f92"
+    },
+    "name": "Vegetarian"
   },
-  "name": "Vegetarian"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f93"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f93"
+    },
+    "name": "Miscellaneous"
   },
-  "name": "Miscellaneous"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f94"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f94"
+    },
+    "name": "Pasta"
   },
-  "name": "Pasta"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f95"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f95"
+    },
+    "name": "Breakfast"
   },
-  "name": "Breakfast"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f96"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f96"
+    },
+    "name": "Side"
   },
-  "name": "Side"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f97"
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f97"
+    },
+    "name": "Goat"
   },
-  "name": "Goat"
-},{
-  "_id": {
-    "$oid": "6462a6cd4c3d0ddd28897f98"
-  },
-  "name": "Soup"
-}]
+  {
+    "_id": {
+      "$oid": "6462a6cd4c3d0ddd28897f98"
+    },
+    "name": "Soup"
+  }
+]
