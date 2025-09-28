@@ -43,21 +43,6 @@ const router = express.Router();
  *                 message:
  *                   type: string
  *                   example: Internal server error
- *
- * components:
- *   schemas:
- *     Category:
- *       type: object
- *       required:
- *         - id
- *         - name
- *       properties:
- *         id:
- *           type: integer
- *           example: 5
- *         name:
- *           type: string
- *           example: Beef
  */
 router.get("/", getCategories);
 

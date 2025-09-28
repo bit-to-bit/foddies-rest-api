@@ -20,6 +20,7 @@ const options = {
     ],
   },
   apis: [
+    path.join(__dirname, "../docs/*.js"),
     path.join(__dirname, "../routes/**/*.js"),
     path.join(__dirname, "../routes/*.js"),
     path.join(__dirname, "../app.js"),

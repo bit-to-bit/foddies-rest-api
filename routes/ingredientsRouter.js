@@ -58,28 +58,6 @@ const router = express.Router();
  *                 message:
  *                   type: string
  *                   example: Internal server error
- *
- * components:
- *   schemas:
- *     Ingredient:
- *       type: object
- *       required:
- *         - id
- *         - name
- *       properties:
- *         id:
- *           type: integer
- *           example: 35
- *         name:
- *           type: string
- *           example: Ackee
- *         description:
- *           type: string
- *           example: A fruit that is native to West Africa ...
- *         img:
- *           type: string
- *           format: uri
- *           example: https://ftp.goit.study/img/so-yummy/ingredients/640c2dd963a319ea671e383b.png
  */
 router.get("/", getIngredients);
 
