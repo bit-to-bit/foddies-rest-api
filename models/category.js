@@ -7,6 +7,11 @@ export const Category = sequelize.define(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING, allowNull: false, unique: true },
+    img: {
+      type: DataTypes.STRING(1000),
+      allowNull: false,
+      defaultValue: "/images/placeholders/category.jpg",
+    },
   },
   {
     timestamps: true,
