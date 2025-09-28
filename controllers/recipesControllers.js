@@ -72,7 +72,7 @@ export const fetchOwnRecipes = async (req, res, next) => {
       page: Number(page) || 1,
       limit: Number(limit) || 8,
     });
-    res.status(200).json(recipes);
+    res.json(recipes);
   } catch (error) {
     next(error);
   }
@@ -107,7 +107,7 @@ export const fetchFavoriteRecipes = async (req, res, next) => {
   try {
     const { id: userId } = req.user;
     const recipes = await getUserFavoriteRecipes(userId);
-    res.status(200).json(recipes);
+    res.json(recipes);
   } catch (error) {
     next(error);
   }
@@ -120,7 +120,7 @@ export const fetchPopularRecipes = async (req, res, next) => {
       page: Number(page),
       limit: Number(limit),
     });
-    res.status(200).json(recipes);
+    res.json(recipes);
   } catch (error) {
     next(error);
   }

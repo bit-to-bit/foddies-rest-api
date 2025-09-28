@@ -56,6 +56,17 @@ export const recipeDetails = (filters = {}) => {
   return include;
 };
 
+const validatePagination = (page, limit, maxLimit = 50) => {
+  let validatedPage = Number(page);
+  let validatedLimit = Number(limit);
+
+  if (isNaN(validatedPage) || validatedPage < 1) validatedPage = 1;
+  if (isNaN(validatedLimit) || validatedLimit < 1) validatedLimit = 8;
+  if (validatedLimit > maxLimit) validatedLimit = maxLimit;
+
+  return { page: validatedPage, limit: validatedLimit };
+};
+
 export const getAllRecipes = async ({
   category,
   ingredient,
@@ -63,22 +74,19 @@ export const getAllRecipes = async ({
   page = 1,
   limit = 8,
 }) => {
-  const offset = (page - 1) * limit;
+  const { page: validatedPage, limit: validatedLimit } = validatePagination(
+    page,
+    limit
+  );
+  const offset = (validatedPage - 1) * validatedLimit;
   const include = recipeDetails({ category, area, ingredient });
 
-  const total = await Recipe.count({
-    include,
-    distinct: true,
-    col: "id",
-  });
-
-  const recipes = await Recipe.findAll({
+  const { count: total, rows: recipes } = await Recipe.findAndCountAll({
     include,
     limit,
     offset,
     order: [["id", "DESC"]],
     distinct: true,
-    logging: console.log,
   });
 
   return {
@@ -142,7 +150,11 @@ export const deleteRecipe = async (recipeId, ownerId) => {
 };
 
 export const getOwnRecipes = async (ownerId, { page = 1, limit = 10 } = {}) => {
-  const offset = (page - 1) * limit;
+  const { page: validatedPage, limit: validatedLimit } = validatePagination(
+    page,
+    limit
+  );
+  const offset = (validatedPage - 1) * validatedLimit;
   const { count: total, rows: recipes } = await Recipe.findAndCountAll({
     where: { ownerId },
     include: recipeDetails(),
@@ -184,7 +196,11 @@ export const getUserFavoriteRecipes = async (
   userId,
   { page = 1, limit = 10 } = {}
 ) => {
-  const offset = (page - 1) * limit;
+  const { page: validatedPage, limit: validatedLimit } = validatePagination(
+    page,
+    limit
+  );
+  const offset = (validatedPage - 1) * validatedLimit;
   const { count: total, rows: favorites } = await Favorite.findAndCountAll({
     where: { userId },
     include: {
@@ -206,7 +222,11 @@ export const getUserFavoriteRecipes = async (
 };
 
 export const getPopularRecipes = async ({ page = 1, limit = 4 } = {}) => {
-  const offset = (page - 1) * limit;
+  const { page: validatedPage, limit: validatedLimit } = validatePagination(
+    page,
+    limit
+  );
+  const offset = (validatedPage - 1) * validatedLimit;
   const recipes = await Recipe.findAll({
     attributes: {
       include: [

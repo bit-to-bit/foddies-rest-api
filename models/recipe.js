@@ -4,7 +4,6 @@ import { sequelize } from "../db/sequelize.js";
 
 export const Recipe = sequelize.define(
   "recipe",
-  "recipe",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     title: { type: DataTypes.STRING, allowNull: false },
@@ -18,8 +17,6 @@ export const Recipe = sequelize.define(
   },
   {
     timestamps: true,
-    tableName: "recipes",
-    indexes: [{ fields: ["title"] }],
     tableName: "recipes",
     indexes: [{ fields: ["title"] }],
   }
