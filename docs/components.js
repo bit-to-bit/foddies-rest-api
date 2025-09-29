@@ -408,6 +408,26 @@
  *               measure:
  *                 type: string
  *                 example: 1 cup
+ *     Favorite:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         userId:
+ *           type: integer
+ *           example: 7
+ *         recipeId:
+ *           type: integer
+ *           example: 1
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2025-09-29T18:02:26.485Z
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           example: 2025-09-29T18:02:26.485Z
  *   responses:
  *     BadRequest:
  *       description: Invalid input data
