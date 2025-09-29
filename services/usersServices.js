@@ -16,7 +16,6 @@ const getUserDetails = async (filter) => {
     return null;
   }
   const recipesAmount = await Recipe.count({ where: { ownerId: user.id } });
-  // TODO: add favorite recipes relation in DB and fix:
   const favoriteRecipesAmount = 0;
   const followersAmount = await user.countFollowers();
   const followingsAmount = await user.countFollowing();

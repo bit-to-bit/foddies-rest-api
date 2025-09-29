@@ -15,7 +15,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000", // TODO: replace with production host after deploy
+        url: "http://localhost:3000",
       },
     ],
   },
