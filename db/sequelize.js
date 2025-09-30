@@ -13,7 +13,12 @@ const {
   DATABASE_PASSWORD,
   DATABASE_HOST,
   DATABASE_PORT,
+  DATABASE_SSL,
 } = process.env;
+
+const needSSL =
+  (DATABASE_SSL || "").toLowerCase() === "true" ||
+  /(render|neon|supabase|railway|vercel)/i.test(DATABASE_HOST || "");
 
 export const sequelize = new Sequelize({
   dialect: DATABASE_DIALECT,
@@ -22,7 +27,13 @@ export const sequelize = new Sequelize({
   password: DATABASE_PASSWORD,
   host: DATABASE_HOST,
   port: DATABASE_PORT,
-  dialectOptions: { ssl: true },
+  ...(needSSL
+    ? {
+        dialectOptions: {
+          ssl: { require: true, rejectUnauthorized: false },
+        },
+      }
+    : {}),
 });
 
 try {
