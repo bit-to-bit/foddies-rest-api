@@ -18,19 +18,334 @@ const recipeRouter = express.Router();
 
 // recipeRouter.use(authenticate);
 
+/**
+ * @openapi
+ * /api/recipes:
+ *   get:
+ *     tags:
+ *       - Recipes
+ *     summary: Retrieve list of recipes
+ *     description: Returns an array of recipe objects with details including category, area, ingredients, and owner.
+ *     responses:
+ *       '200':
+ *         description: Recipes retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Recipes retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     recipes:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Recipe'
+ *                     total:
+ *                       type: integer
+ *                       example: 285
+ *                     page:
+ *                       type: integer
+ *                       example: 1
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 36
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 recipeRouter.get("/", getRecipes);
+
+/**
+ * @openapi
+ * /api/recipes/me:
+ *   get:
+ *     tags:
+ *       - Recipes
+ *     summary: Retrieve recipes of the authenticated user
+ *     description: Returns an array of recipes created by the logged-in user, including details such as category, area, ingredients, and owner.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: User's recipes retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 recipes:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Recipe'
+ *                 total:
+ *                   type: integer
+ *                   example: 3
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 1
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 recipeRouter.get("/me", authenticate, fetchOwnRecipes);
+
+/**
+ * @openapi
+ * /api/recipes/favorite:
+ *   get:
+ *     tags:
+ *       - Recipes
+ *     summary: Retrieve favorite recipes of the authenticated user
+ *     description: Returns a paginated list of recipes that the authenticated user has added to favorites, including category, area, ingredients, and owner details.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Favorite recipes retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 recipes:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Recipe'
+ *                 total:
+ *                   type: integer
+ *                   example: 12
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 2
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 recipeRouter.get("/favorite", authenticate, fetchFavoriteRecipes);
+
+/**
+ * @openapi
+ * /api/recipes/popular:
+ *   get:
+ *     tags:
+ *       - Recipes
+ *     summary: Retrieve popular recipes
+ *     description: Returns a paginated list of popular recipes ordered by popularity (favorites count). Each recipe includes category, area, ingredients, owner and a favoritesCount field.
+ *     responses:
+ *       '200':
+ *         description: Popular recipes retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 recipes:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Recipe'
+ *                 total:
+ *                   type: integer
+ *                   example: 286
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 72
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 recipeRouter.get("/popular", fetchPopularRecipes);
+
+/**
+ * @openapi
+ * /api/recipes/{id}:
+ *   get:
+ *     tags:
+ *       - Recipes
+ *     summary: Retrieve recipe details
+ *     description: Returns a single recipe object by ID including category, area, ingredients and owner details.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Numeric ID of the recipe to retrieve
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       '200':
+ *         description: Recipe retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Recipe'
+ *       '404':
+ *         description: Recipe not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               NotFoundExample:
+ *                 value:
+ *                   message: Resource not found
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 recipeRouter.get("/:id", getRecipeDetails);
+
+/**
+ * @openapi
+ * /api/recipes:
+ *   post:
+ *     tags:
+ *       - Recipes
+ *     summary: Add a new recipe
+ *     description: Creates a new recipe with details including title, category, area, ingredients, instructions, and owner.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateRecipeRequest'
+ *     responses:
+ *       '201':
+ *         description: Recipe created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Recipe'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 recipeRouter.post(
   "/",
   authenticate,
   validateBody(createRecipeSchema),
   addRecipe
 );
+
+/**
+ * @openapi
+ * /api/recipes/{id}:
+ *   delete:
+ *     tags:
+ *       - Recipes
+ *     summary: Delete a recipe
+ *     description: Authenticated user deletes the specified recipe. Returns the deleted recipe object.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Numeric ID of the recipe to delete
+ *         schema:
+ *           type: integer
+ *           example: 286
+ *     responses:
+ *       '200':
+ *         description: Recipe deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Recipe'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 recipeRouter.delete("/:id", authenticate, removeRecipe);
+
+/**
+ * @openapi
+ * /api/recipes/{id}/favorite:
+ *   post:
+ *     tags:
+ *       - Recipes
+ *     summary: Add recipe to favorites
+ *     description: Authenticated user adds the specified recipe to their favorites.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Numeric ID of the recipe to favorite
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       '200':
+ *         description: Recipe added to favorites successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Favorite'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 recipeRouter.post("/:id/favorite", authenticate, addRecipeToFavorite);
+
+/**
+ * @openapi
+ * /api/recipes/{id}/favorite:
+ *   delete:
+ *     tags:
+ *       - Recipes
+ *     summary: Remove recipe from favorites
+ *     description: Authenticated user removes the specified recipe from their favorites. Returns the deleted favorite record.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Numeric ID of the recipe to remove from favorites
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       '200':
+ *         description: Favorite removed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Favorite'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 recipeRouter.delete("/:id/favorite", authenticate, deleteRecipeFromFavorite);
 
 export default recipeRouter;

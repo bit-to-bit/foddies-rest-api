@@ -15,11 +15,12 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000", // TODO: replace with production host after deploy
+        url: "http://localhost:3000",
       },
     ],
   },
   apis: [
+    path.join(__dirname, "../docs/*.js"),
     path.join(__dirname, "../routes/**/*.js"),
     path.join(__dirname, "../routes/*.js"),
     path.join(__dirname, "../app.js"),
