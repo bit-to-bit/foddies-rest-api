@@ -20,7 +20,12 @@ export const registerUser = async (payload) => {
     avatar: url,
   });
 
-  return newUser;
+  const tokenPayload = { id: newUser.id };
+  const token = createToken(tokenPayload);
+
+  await newUser.update({ token });
+
+  return { user: newUser, token };
 };
 
 export const loginUser = async (payload) => {

@@ -12,8 +12,11 @@ import {
   fetchPopularRecipes,
 } from "../controllers/recipesControllers.js";
 import authenticate from "../middlewares/authenticate.js";
-import validateBody from "../middlewares/validateBody.js";
-import { createRecipeSchema } from "../schemas/recipesSchemas.js";
+import validate from "../middlewares/validate.js";
+import {
+  createRecipeSchema,
+  listRecipesQuerySchema,
+} from "../schemas/recipesSchemas.js";
 const recipeRouter = express.Router();
 
 // recipeRouter.use(authenticate);
@@ -59,7 +62,7 @@ const recipeRouter = express.Router();
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-recipeRouter.get("/", getRecipes);
+recipeRouter.get("/", validate(listRecipesQuerySchema, "query"), getRecipes);
 
 /**
  * @openapi
@@ -97,7 +100,12 @@ recipeRouter.get("/", getRecipes);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-recipeRouter.get("/me", authenticate, fetchOwnRecipes);
+recipeRouter.get(
+  "/me",
+  authenticate,
+  validate(listRecipesQuerySchema, "query"),
+  fetchOwnRecipes
+);
 
 /**
  * @openapi
@@ -135,7 +143,12 @@ recipeRouter.get("/me", authenticate, fetchOwnRecipes);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-recipeRouter.get("/favorite", authenticate, fetchFavoriteRecipes);
+recipeRouter.get(
+  "/favorite",
+  authenticate,
+  validate(listRecipesQuerySchema, "query"),
+  fetchFavoriteRecipes
+);
 
 /**
  * @openapi
@@ -169,7 +182,11 @@ recipeRouter.get("/favorite", authenticate, fetchFavoriteRecipes);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-recipeRouter.get("/popular", fetchPopularRecipes);
+recipeRouter.get(
+  "/popular",
+  validate(listRecipesQuerySchema, "query"),
+  fetchPopularRecipes
+);
 
 /**
  * @openapi
@@ -239,12 +256,7 @@ recipeRouter.get("/:id", getRecipeDetails);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-recipeRouter.post(
-  "/",
-  authenticate,
-  validateBody(createRecipeSchema),
-  addRecipe
-);
+recipeRouter.post("/", authenticate, validate(createRecipeSchema), addRecipe);
 
 /**
  * @openapi

@@ -67,19 +67,34 @@
  *     RegisterResponse:
  *       type: object
  *       properties:
- *         status:
- *           type: integer
- *           example: 201
- *         data:
+ *         token:
+ *           type: string
+ *           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *         user:
  *           type: object
  *           properties:
  *             id:
  *               type: integer
- *               example: 7
+ *               example: 4
+ *             name:
+ *               type: string
+ *               example: Test
  *             email:
  *               type: string
  *               format: email
  *               example: test@zxc.com
+ *             avatar:
+ *               type: string
+ *               format: uri
+ *               example: https://s.gravatar.com/avatar/45a191ecff2ed6216d27a42962b8bbf5?s=100&r=x&d=retro
+ *             createdAt:
+ *               type: string
+ *               format: date-time
+ *               example: 2025-09-30T19:24:27.867Z
+ *             updatedAt:
+ *               type: string
+ *               format: date-time
+ *               example: 2025-09-30T19:24:27.878Z
  *     LoginRequest:
  *       type: object
  *       required:
