@@ -4,7 +4,7 @@
 export async function up({ context }) {
   const { queryInterface, DataTypes } = context;
 
-  await queryInterface.changeColumn("categories", "img", {
+  await queryInterface.addColumn("categories", "img", {
     type: DataTypes.STRING(1000),
     allowNull: false,
     defaultValue: "/images/placeholders/category.jpg",

@@ -17,7 +17,7 @@ export const registerUser = async (payload) => {
   const newUser = await User.create({
     ...payload,
     password: hashPassword,
-    avatarURL: url,
+    avatar: url,
   });
 
   return newUser;
@@ -40,7 +40,7 @@ export const loginUser = async (payload) => {
 
   return {
     token: token,
-    user: { username: user.username, email, avatarURL: user.avatarURL },
+    user: user,
   };
 };
 
