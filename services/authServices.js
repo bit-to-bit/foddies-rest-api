@@ -48,7 +48,3 @@ export const logoutUser = async (user) => {
   await user.update({ token: null });
   return user;
 };
-
-export const getUser = (query) => {
-  return User.findOne({ where: query });
-};
