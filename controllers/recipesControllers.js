@@ -11,17 +11,76 @@ import {
   getUserFavoriteRecipes,
   getPopularRecipes,
 } from "../services/recipesServices.js";
+
 export const getRecipes = async (req, res, next) => {
   try {
-    const { category, ingredient, area, page = 1, limit = 8 } = req.query;
-    const recipes = await getAllRecipes({
+    const { category, ingredient, area } = req.query;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 8;
+
+    const data = await getAllRecipes({
       category,
       ingredient,
       area,
-      page: Number(page),
-      limit: Number(limit),
+      page,
+      limit,
     });
-    res.json(recipes);
+
+    // Expecting { recipes, total, page, totalPages } from service
+    res.json({
+      status: 200,
+      message: "Recipes retrieved successfully",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+/* GET /api/recipes/filters?category= */
+export const getRecipeFiltersByCategory = async (req, res, next) => {
+  try {
+    const { category } = req.query;
+    const { recipes = [] } = await getAllRecipes({
+      category,
+      page: 1,
+      limit: 500, 
+    });
+
+    const areasSet = new Set();
+    const ingredientsSet = new Set();
+
+    for (const r of recipes) {
+      const areaName =
+        r?.area?.name ??
+        r?.Area?.name ?? 
+        r?.area ??
+        null;
+      if (areaName) areasSet.add(areaName);
+
+      const list =
+        r?.ingredients ??
+        r?.Ingredients ??
+        r?.ingredientsList ??
+        [];
+
+      for (const it of list) {
+        const ingName = it?.name ?? it;
+        if (ingName) ingredientsSet.add(ingName);
+      }
+    }
+
+    res.json({
+      status: 200,
+      message: "Filters retrieved successfully",
+      data: {
+        areas: Array.from(areasSet).sort((a, b) => a.localeCompare(b)),
+        ingredients: Array.from(ingredientsSet).sort((a, b) =>
+          a.localeCompare(b)
+        ),
+      },
+    });
   } catch (error) {
     next(error);
   }

@@ -1,6 +1,10 @@
 import express from "express";
 
-import { getCategories } from "../controllers/categoriesControllers.js";
+import {
+  getCategories,
+  getCategoryRecipes,
+  getCategoryFilters,
+} from "../controllers/categoriesControllers.js";
 
 const router = express.Router();
 
@@ -45,5 +49,19 @@ const router = express.Router();
  *                   example: Internal server error
  */
 router.get("/", getCategories);
+
+/**
+ * GET /api/categories/:category/recipes
+ * List recipes for a category with optional filters & pagination.
+ * :category can be id, or name (case-insensitive)
+ * Query: page=1, limit=12, area, ingredient
+ */
+router.get("/:category/recipes", getCategoryRecipes);
+
+/**
+ * GET /api/categories/:category/filters
+ * Distinct Areas & Ingredients available inside this category
+ */
+router.get("/:category/filters", getCategoryFilters);
 
 export default router;

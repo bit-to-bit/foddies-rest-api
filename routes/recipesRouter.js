@@ -2,6 +2,7 @@ import express, { application } from "express";
 
 import {
   getRecipes,
+  getRecipeFiltersByCategory,
   getRecipeDetails,
   addRecipe,
   removeRecipe,
@@ -60,6 +61,25 @@ const recipeRouter = express.Router();
  *         $ref: '#/components/responses/InternalServerError'
  */
 recipeRouter.get("/", getRecipes);
+
+/**
+ * @openapi
+ * /api/recipes/filters:
+ *   get:
+ *     tags:
+ *       - Recipes
+ *     summary: Retrieve filter lists for a category
+ *     description: Returns distinct areas and ingredients available within the specified category.
+ *     parameters:
+ *       - in: query
+ *         name: category
+ *         schema: { type: string }
+ *         description: Category name or id
+ *     responses:
+ *       '200':
+ *         description: Filters retrieved successfully
+ */
+recipeRouter.get("/filters", getRecipeFiltersByCategory);
 
 /**
  * @openapi
