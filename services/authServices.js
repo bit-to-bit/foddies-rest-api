@@ -17,7 +17,7 @@ export const registerUser = async (payload) => {
   const newUser = await User.create({
     ...payload,
     password: hashPassword,
-    avatarURL: url,
+    avatar: url,
   });
 
   return newUser;
@@ -40,11 +40,15 @@ export const loginUser = async (payload) => {
 
   return {
     token: token,
-    user: { username: user.username, email, avatarURL: user.avatarURL },
+    user: user,
   };
 };
 
 export const logoutUser = async (user) => {
   await user.update({ token: null });
   return user;
+};
+
+export const getUser = (query) => {
+  return User.findOne({ where: query });
 };

@@ -7,7 +7,11 @@ export const User = sequelize.define(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING, allowNull: false },
-    email: { type: DataTypes.STRING, allowNull: false, unique: true },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: { args: true, msg: "Email already exists" },
+    },
     password: { type: DataTypes.STRING, allowNull: false },
     avatar: { type: DataTypes.STRING, allowNull: true },
     token: { type: DataTypes.STRING, allowNull: true },
