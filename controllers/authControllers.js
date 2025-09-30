@@ -2,9 +2,13 @@ import {
   registerUser,
   loginUser,
   logoutUser,
+  getUser,
 } from "../services/authServices.js";
 
 export const registerController = async (req, res) => {
+  if (await getUser({ email: req.body.email })) {
+    return res.status(409).json({ message: "Email already exists" });
+  }
   const { id, name, email, avatar } = await registerUser(req.body);
   res.status(201).json({
     status: 201,
