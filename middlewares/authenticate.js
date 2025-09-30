@@ -1,33 +1,30 @@
-import httpError from "../helpers/httpError.js";
+import createError from "http-errors";
 import { verifyToken } from "../helpers/jwt.js";
 import usersServices from "../services/usersServices.js";
 
 const authenticate = async (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
-    return next(httpError(401, "Authorization header not found"));
+    throw new createError.Unauthorized("Authorization header not found");
   }
 
   const [bearer, token] = authorization.split(" ");
   if (bearer !== "Bearer") {
-    return next(httpError(401, "Bearer not found"));
+    throw new createError.Unauthorized("Bearer not found");
   }
 
-  try {
-    const { id } = verifyToken(token);
-    const user = await usersServices.findUser({ id });
-    if (!user) {
-      return next(httpError(401, "User not found"));
-    }
-    if (!user.token) {
-      return next(httpError(401, "Not authorized"));
-    }
+  const { email } = verifyToken(token);
 
-    req.user = user;
-    next();
-  } catch (error) {
-    next(httpError(401, error.message));
+  const user = await usersServices.findUser({ email });
+  if (!user) {
+    throw new createError.Unauthorized("User not found");
   }
+  if (!user.token) {
+    throw new createError.Unauthorized("Not authorized");
+  }
+
+  req.user = user;
+  next();
 };
 
 export default authenticate;

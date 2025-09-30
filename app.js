@@ -4,7 +4,7 @@ import morgan from "morgan";
 import path from "path";
 import "dotenv/config";
 import "./db/sequelize.js";
-
+import { errorHandler } from "./middlewares/errorHandlerAuth.js";
 import swaggerUi from "swagger-ui-express";
 
 import { swaggerSpec } from "./helpers/swagger.js";
@@ -41,12 +41,7 @@ app.use("/api/recipes", recipesRouter);
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
 });
-
-app.use((err, req, res, next) => {
-  const { status = 500, message = "Server error" } = err;
-  console.error(err);
-  res.status(status).json({ message });
-});
+app.use(errorHandler);
 
 app.listen(APP_PORT, () => {
   console.log(`Server is running. Use our API on port: ${APP_PORT}`);
