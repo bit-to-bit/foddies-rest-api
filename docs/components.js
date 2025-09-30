@@ -75,7 +75,7 @@
  *           properties:
  *             id:
  *               type: integer
- *               example: 4
+ *               example: 12
  *             name:
  *               type: string
  *               example: Test
@@ -90,11 +90,15 @@
  *             createdAt:
  *               type: string
  *               format: date-time
- *               example: 2025-09-30T19:24:27.867Z
+ *               example: 2025-09-30T20:55:29.974Z
  *             updatedAt:
  *               type: string
  *               format: date-time
- *               example: 2025-09-30T19:24:27.878Z
+ *               example: 2025-09-30T20:55:30.031Z
+ *             token:
+ *               type: string
+ *               description: Duplicates top-level token as returned by the service.
+ *               example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *     LoginRequest:
  *       type: object
  *       required:
@@ -118,10 +122,32 @@
  *         user:
  *           type: object
  *           properties:
+ *             id:
+ *               type: integer
+ *               example: 12
+ *             name:
+ *               type: string
+ *               example: Test
  *             email:
  *               type: string
  *               format: email
  *               example: test@zxc.com
+ *             avatar:
+ *               type: string
+ *               format: uri
+ *               example: https://s.gravatar.com/avatar/45a191ecff2ed6216d27a42962b8bbf5?s=100&r=x&d=retro
+ *             token:
+ *               type: string
+ *               description: Duplicates top-level token as returned by the service.
+ *               example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *             createdAt:
+ *               type: string
+ *               format: date-time
+ *               example: 2025-09-30T20:55:29.974Z
+ *             updatedAt:
+ *               type: string
+ *               format: date-time
+ *               example: 2025-09-30T20:55:58.561Z
  *     LogoutResponse:
  *       type: object
  *       properties:
