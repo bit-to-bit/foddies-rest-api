@@ -1,5 +1,7 @@
 import Joi from "joi";
 
+import { paginationQuerySchema } from "./paginationSchemas.js";
+
 export const createRecipeSchema = Joi.object({
   title: Joi.string().min(3).max(255).required(),
   categoryId: Joi.number().integer().required(),
@@ -18,4 +20,10 @@ export const createRecipeSchema = Joi.object({
     )
     .min(1)
     .required(),
+});
+
+export const listRecipesQuerySchema = paginationQuerySchema.keys({
+  category: Joi.string().trim().optional(),
+  ingredient: Joi.string().trim().optional(),
+  area: Joi.string().trim().optional(),
 });

@@ -20,7 +20,15 @@ export const registerUser = async (payload) => {
     avatar: url,
   });
 
-  return newUser;
+  const tokenPayload = { id: newUser.id };
+  const token = createToken(tokenPayload);
+
+  await newUser.update({ token });
+
+  const userResponse = { ...newUser.dataValues };
+  delete userResponse.password;
+
+  return { user: userResponse, token };
 };
 
 export const loginUser = async (payload) => {
@@ -38,9 +46,12 @@ export const loginUser = async (payload) => {
   const token = createToken(tokenPayload);
   await user.update({ token });
 
+  const userResponse = { ...user.dataValues };
+  delete userResponse.password;
+
   return {
     token: token,
-    user: user,
+    user: userResponse,
   };
 };
 

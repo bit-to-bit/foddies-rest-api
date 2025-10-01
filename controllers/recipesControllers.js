@@ -106,7 +106,8 @@ export const deleteRecipeFromFavorite = async (req, res, next) => {
 export const fetchFavoriteRecipes = async (req, res, next) => {
   try {
     const { id: userId } = req.user;
-    const recipes = await getUserFavoriteRecipes(userId);
+    const { page, limit } = req.query;
+    const recipes = await getUserFavoriteRecipes(userId, { page, limit });
     res.json(recipes);
   } catch (error) {
     next(error);
