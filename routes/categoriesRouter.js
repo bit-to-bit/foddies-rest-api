@@ -51,16 +51,67 @@ const router = express.Router();
 router.get("/", getCategories);
 
 /**
- * GET /api/categories/:category/recipes
- * List recipes for a category with optional filters & pagination.
- * :category can be id, or name (case-insensitive)
- * Query: page=1, limit=12, area, ingredient
+ * @openapi
+ * /api/categories/{category}/recipes:
+ *   get:
+ *     tags: [Categories]
+ *     summary: List recipes in a category
+ *     description: category can be id or name (case-insensitive).
+ *     parameters:
+ *       - in: path
+ *         name: category
+ *         required: true
+ *         schema: { type: string }
+ *       - in: query
+ *         name: page
+ *         schema: { type: integer, minimum: 1, default: 1 }
+ *       - in: query
+ *         name: limit
+ *         schema: { type: integer, minimum: 1, maximum: 50, default: 12 }
+ *       - in: query
+ *         name: area
+ *         schema: { type: string }
+ *       - in: query
+ *         name: ingredient
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Recipes retrieved successfully
  */
 router.get("/:category/recipes", getCategoryRecipes);
 
+
 /**
- * GET /api/categories/:category/filters
- * Distinct Areas & Ingredients available inside this category
+ * @openapi
+ * /api/categories/{category}/filters:
+ *   get:
+ *     tags: [Categories]
+ *     summary: Get filters for a category
+ *     description: Distinct areas and ingredients available for this category.
+ *     parameters:
+ *       - in: path
+ *         name: category
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Filters retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status: { type: integer, example: 200 }
+ *                 message: { type: string, example: Filters retrieved successfully }
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     areas:
+ *                       type: array
+ *                       items: { type: string }
+ *                     ingredients:
+ *                       type: array
+ *                       items: { type: string }
  */
 router.get("/:category/filters", getCategoryFilters);
 

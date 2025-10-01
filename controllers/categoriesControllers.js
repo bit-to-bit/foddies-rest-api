@@ -115,7 +115,7 @@ export const getCategoryRecipes = async (req, res, next) => {
     ];
 
     const { rows, count } = await Recipe.findAndCountAll({
-      attributes: ["id", "title", "description", "thumb", "preview", "img"],
+      attributes: ["id", "title", "description", "thumb"],
       include: includes,
       distinct: true,
       offset,
@@ -129,7 +129,7 @@ export const getCategoryRecipes = async (req, res, next) => {
       description:
         r.description ??
         (r.instructions ? String(r.instructions).slice(0, 160) : ""),
-      image: r.thumb || r.preview || r.img || null,
+      image: r.thumb || null,
       category: r.category ? { id: r.category.id, name: r.category.name } : null,
       area: r.area ? { id: r.area.id, name: r.area.name } : null,
       ingredients: Array.isArray(r.ingredients)
