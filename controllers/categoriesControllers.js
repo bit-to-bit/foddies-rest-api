@@ -1,9 +1,13 @@
-import { Op, Sequelize } from "sequelize";
+import { Op } from "sequelize";
+import models from "../models/index.js";
 
-import { Area } from "../models/area.js";
-import { Category } from "../models/category.js";
-import { Ingredient } from "../models/ingredient.js";
-import { Recipe } from "../models/recipe.js";
+const {
+  Recipe,
+  Category,
+  Area,
+  Ingredient,
+} = models;
+
 import { listCategories } from "../services/categoriesServices.js";
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
