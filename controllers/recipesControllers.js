@@ -1,5 +1,7 @@
+import Joi from "joi";
 import httpError from "../helpers/httpError.js";
-import { Recipe } from "../models/recipe.js";
+import { paginationQuerySchema } from "../schemas/paginationSchemas.js";
+
 import {
   getAllRecipes,
   getRecipeById,
@@ -12,24 +14,168 @@ import {
   getPopularRecipes,
 } from "../services/recipesServices.js";
 
+/* GET /api/recipes */
 export const getRecipes = async (req, res, next) => {
   try {
-    const { category, ingredient, area } = req.query;
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 8;
+    
+    const schema = paginationQuerySchema.keys({
+      category: Joi.string().trim().optional(),
+      area: Joi.string().trim().optional(),
+      ingredient: Joi.string().trim().optional(),
+    });
+
+    const { value, error } = schema.validate(req.query);
+    if (error) {
+      return res.status(400).json({ status: 400, message: error.message });
+    }
+
+    const { category, area, ingredient, page, limit } = value;
 
     const data = await getAllRecipes({
       category,
-      ingredient,
       area,
+      ingredient,
       page,
       limit,
     });
 
-    // Expecting { recipes, total, page, totalPages } from service
     res.json({
       status: 200,
       message: "Recipes retrieved successfully",
+      data, 
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* GET /api/recipes/:id */
+export const getRecipeDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const recipe = await getRecipeById(id);
+    if (!recipe) {
+      throw httpError(404, `Recipe with id=${id} not found`);
+    }
+
+    res.json({
+      status: 200,
+      message: "Recipe retrieved successfully",
+      data: recipe,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* POST /api/recipes */
+export const addRecipe = async (req, res, next) => {
+  try {
+    const { id: ownerId } = req.user;
+    const recipe = await createRecipe({ ...req.body, ownerId });
+
+    res.status(201).json({
+      status: 201,
+      message: "Recipe created successfully",
+      data: recipe,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* DELETE /api/recipes/:id */
+export const removeRecipe = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { id: ownerId } = req.user;
+
+    const recipe = await deleteRecipe(id, ownerId);
+    if (!recipe) {
+      throw httpError(404, "Recipe not found");
+    }
+
+    res.json({
+      status: 200,
+      message: "Recipe deleted successfully",
+      data: recipe,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* GET /api/recipes/me */
+export const fetchOwnRecipes = async (req, res, next) => {
+  try {
+    const { value, error } = paginationQuerySchema.validate(req.query);
+    if (error) {
+      return res.status(400).json({ status: 400, message: error.message });
+    }
+
+    const { id: ownerId } = req.user;
+    const { page, limit } = value;
+
+    const data = await getOwnRecipes(ownerId, { page, limit });
+    res.json({
+      status: 200,
+      message: "User recipes retrieved successfully",
+      data, 
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* POST /api/recipes/:id/favorite */
+export const addRecipeToFavorite = async (req, res, next) => {
+  try {
+    const { id: userId } = req.user;
+    const { id: recipeId } = req.params;
+
+    const favorite = await addToFavorite(userId, recipeId);
+
+    res.status(201).json({
+      status: 201,
+      message: "Recipe added to favorites",
+      data: favorite,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* DELETE /api/recipes/:id/favorite */
+export const deleteRecipeFromFavorite = async (req, res, next) => {
+  try {
+    const { id: userId } = req.user;
+    const { id: recipeId } = req.params;
+
+    const favorite = await removeFromFavorite(userId, recipeId);
+    if (!favorite) {
+      throw httpError(404, "Favorite not found");
+    }
+
+    res.json({
+      status: 200,
+      message: "Favorite removed successfully",
+      data: favorite,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* GET /api/recipes/favorite */
+export const fetchFavoriteRecipes = async (req, res, next) => {
+  try {
+    const { id: userId } = req.user;
+
+    const data = await getUserFavoriteRecipes(userId);
+    res.json({
+      status: 200,
+      message: "Favorite recipes retrieved successfully",
       data,
     });
   } catch (error) {
@@ -37,37 +183,60 @@ export const getRecipes = async (req, res, next) => {
   }
 };
 
+/* GET /api/recipes/popular */
+export const fetchPopularRecipes = async (req, res, next) => {
+  try {
+    const { value, error } = paginationQuerySchema
+      .fork(["limit"], (s) => s.default(4))
+      .validate(req.query);
 
-/* GET /api/recipes/filters?category= */
+    if (error) {
+      return res.status(400).json({ status: 400, message: error.message });
+    }
+
+    const { page, limit } = value;
+
+    const data = await getPopularRecipes({ page, limit });
+    res.json({
+      status: 200,
+      message: "Popular recipes retrieved successfully",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* GET /api/recipes/filters?category */
 export const getRecipeFiltersByCategory = async (req, res, next) => {
   try {
-    const { category } = req.query;
+    const schema = Joi.object({
+      category: Joi.string().trim().required(),
+    });
+
+    const { value, error } = schema.validate(req.query);
+    if (error) {
+      return res.status(400).json({ status: 400, message: error.message });
+    }
+
+    const { category } = value;
+
     const { recipes = [] } = await getAllRecipes({
       category,
       page: 1,
-      limit: 500, 
+      limit: 50,
     });
 
     const areasSet = new Set();
     const ingredientsSet = new Set();
 
     for (const r of recipes) {
-      const areaName =
-        r?.area?.name ??
-        r?.Area?.name ?? 
-        r?.area ??
-        null;
-      if (areaName) areasSet.add(areaName);
+      if (r?.area?.name) areasSet.add(r.area.name);
 
-      const list =
-        r?.ingredients ??
-        r?.Ingredients ??
-        r?.ingredientsList ??
-        [];
-
-      for (const it of list) {
-        const ingName = it?.name ?? it;
-        if (ingName) ingredientsSet.add(ingName);
+      if (Array.isArray(r?.ingredients)) {
+        r.ingredients.forEach((ing) => {
+          if (ing?.name) ingredientsSet.add(ing.name);
+        });
       }
     }
 
@@ -75,112 +244,10 @@ export const getRecipeFiltersByCategory = async (req, res, next) => {
       status: 200,
       message: "Filters retrieved successfully",
       data: {
-        areas: Array.from(areasSet).sort((a, b) => a.localeCompare(b)),
-        ingredients: Array.from(ingredientsSet).sort((a, b) =>
-          a.localeCompare(b)
-        ),
+        areas: [...areasSet],
+        ingredients: [...ingredientsSet],
       },
     });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const getRecipeDetails = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const recipe = await getRecipeById(id);
-    if (!recipe) {
-      throw httpError(404, `Recipe with id=${id} not found`);
-    }
-    res.json(recipe);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const addRecipe = async (req, res, next) => {
-  try {
-    const { id: ownerId } = req.user;
-    const recipe = await createRecipe({ ...req.body, ownerId });
-    res.status(201).json(recipe);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const removeRecipe = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { id: ownerId } = req.user;
-    const recipe = await deleteRecipe(id, ownerId);
-    if (!recipe) {
-      throw httpError(404);
-    }
-    res.json(recipe);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const fetchOwnRecipes = async (req, res, next) => {
-  try {
-    const { id: ownerId } = req.user;
-    const { page, limit } = req.query;
-    const recipes = await getOwnRecipes(ownerId, {
-      page: Number(page) || 1,
-      limit: Number(limit) || 8,
-    });
-    res.json(recipes);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const addRecipeToFavorite = async (req, res, next) => {
-  try {
-    const { id: userId } = req.user;
-    const { id: recipeId } = req.params;
-    const favorite = await addToFavorite(userId, recipeId);
-    res.status(201).json(favorite);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const deleteRecipeFromFavorite = async (req, res, next) => {
-  try {
-    const { id: userId } = req.user;
-    const { id: recipeId } = req.params;
-    const favorite = await removeFromFavorite(userId, recipeId);
-    if (!favorite) {
-      throw httpError(404, "Favorite not found");
-    }
-    res.json(favorite);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const fetchFavoriteRecipes = async (req, res, next) => {
-  try {
-    const { id: userId } = req.user;
-    const { page, limit } = req.query;
-    const recipes = await getUserFavoriteRecipes(userId, { page, limit });
-    res.json(recipes);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const fetchPopularRecipes = async (req, res, next) => {
-  try {
-    const { page = 1, limit = 4 } = req.query;
-    const recipes = await getPopularRecipes({
-      page: Number(page),
-      limit: Number(limit),
-    });
-    res.json(recipes);
   } catch (error) {
     next(error);
   }
