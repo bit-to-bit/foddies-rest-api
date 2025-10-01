@@ -7,7 +7,7 @@ import {
 } from "../controllers/authControllers.js";
 import controllerWrapper from "../helpers/controllerWrapper.js";
 import authenticate from "../middlewares/authenticate.js";
-import validateBody from "../middlewares/validateBody.js";
+import validate from "../middlewares/validate.js";
 import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
 
 const authRouter = express.Router();
@@ -19,7 +19,8 @@ const authRouter = express.Router();
  *     tags:
  *       - Auth
  *     summary: Register a new user
- *     description: Creates a new user account with name, email, and password.
+ *     description: Creates a new user account with name, email, and password.  
+ *                  Returns a JWT token and user object.
  *     requestBody:
  *       required: true
  *       content:
@@ -40,7 +41,7 @@ const authRouter = express.Router();
  */
 authRouter.post(
   "/register",
-  validateBody(registerSchema),
+  validate(registerSchema),
   controllerWrapper(registerController)
 );
 
@@ -74,7 +75,7 @@ authRouter.post(
  */
 authRouter.post(
   "/login",
-  validateBody(loginSchema),
+  validate(loginSchema),
   controllerWrapper(loginController)
 );
 
