@@ -14,12 +14,14 @@ import {
 export const getRecipes = async (req, res, next) => {
   try {
     const { category, ingredient, area, page = 1, limit = 8 } = req.query;
+    const userId = req.user?.id || null;
     const recipes = await getAllRecipes({
       category,
       ingredient,
       area,
       page: Number(page),
       limit: Number(limit),
+      userId,
     });
     res.json(recipes);
   } catch (error) {
