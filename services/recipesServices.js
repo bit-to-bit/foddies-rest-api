@@ -175,9 +175,11 @@ export const removeFromFavorite = async (userId, recipeId) => {
 
 export const getUserFavoriteRecipes = async (
   userId,
-  { page = 1, limit = 10 } = {}
+  { page = 1, limit = 9 } = {}
 ) => {
-  const offset = (page - 1) * limit;
+  const pageNum = Number(page) || 1;
+  const limitNum = Number(limit) || 9;
+  const offset = (pageNum - 1) * limitNum;
   const { count: total, rows: favorites } = await Favorite.findAndCountAll({
     where: { userId },
     include: {
@@ -185,7 +187,8 @@ export const getUserFavoriteRecipes = async (
       as: "recipe",
       include: recipeDetails(),
     },
-    limit,
+    distinct: true,
+    limit: limitNum,
     offset,
     order: [["id", "DESC"]],
   });
@@ -193,8 +196,8 @@ export const getUserFavoriteRecipes = async (
   return {
     recipes,
     total,
-    page,
-    totalPages: Math.ceil(total / limit),
+    page: pageNum,
+    totalPages: Math.ceil(total / limitNum),
   };
 };
 
