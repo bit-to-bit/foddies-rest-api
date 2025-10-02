@@ -106,8 +106,12 @@ export const deleteRecipeFromFavorite = async (req, res, next) => {
 export const fetchFavoriteRecipes = async (req, res, next) => {
   try {
     const { id: userId } = req.user;
-    const { page, limit } = req.query;
-    const recipes = await getUserFavoriteRecipes(userId, { page, limit });
+    const pageNum = parseInt(req.query.page) || 1;
+    const limitNum = parseInt(req.query.limit) || 8; // або default з Joi
+    const recipes = await getUserFavoriteRecipes(userId, {
+      page: pageNum,
+      limit: limitNum,
+    });
     res.json(recipes);
   } catch (error) {
     next(error);

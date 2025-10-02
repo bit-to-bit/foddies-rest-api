@@ -19,7 +19,7 @@ const authRouter = express.Router();
  *     tags:
  *       - Auth
  *     summary: Register a new user
- *     description: Creates a new user account with name, email, and password.  
+ *     description: Creates a new user account with name, email, and password.
  *                  Returns a JWT token and user object.
  *     requestBody:
  *       required: true
