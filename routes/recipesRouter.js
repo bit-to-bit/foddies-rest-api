@@ -1,5 +1,6 @@
 import express, { application } from "express";
 
+import { getCategoryFilters } from "../controllers/categoriesControllers.js";
 import {
   getRecipes,
   getRecipeDetails,
@@ -70,6 +71,71 @@ recipeRouter.get(
   validate(listRecipesQuerySchema, "query"),
   getRecipes
 );
+
+/**
+ * @openapi
+ * /api/recipes/filters:
+ *   get:
+ *     tags: [Recipes]
+ *     summary: Get available filters for recipes
+ *     description: >
+ *       Returns distinct areas and ingredients that exist for the current
+ *       selection. You can optionally narrow the pool by passing one or more
+ *       query parameters. For example, passing category=Dessert will return
+ *       only areas/ingredients that appear among Dessert recipes.
+ *
+ *     parameters:
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Category name (case-insensitive). Example: Dessert
+ *       - in: query
+ *         name: area
+ *         schema:
+ *           type: string
+ *         description: Area/cuisine name (case-insensitive). Example: French
+ *       - in: query
+ *         name: ingredient
+ *         schema:
+ *           type: string
+ *         description: Ingredient name (case-insensitive). Example: Sugar
+ *
+ *     responses:
+ *       200:
+ *         description: Filters retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Filters retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     areas:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["French", "Italian", "American"]
+ *                     ingredients:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["Sugar", "Flour", "Butter"]
+ *       500:
+ *         description: Internal server error
+ */
+recipeRouter.get("/filters", (req, res, next) => {
+  req.params.category = String(req.query.category || '').toLowerCase().replace(/\s+/g, '-');
+  return getCategoryFilters(req, res, next);
+});
+
 /**
  * @openapi
  * /api/recipes/me:
