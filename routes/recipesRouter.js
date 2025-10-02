@@ -12,6 +12,7 @@ import {
   fetchPopularRecipes,
 } from "../controllers/recipesControllers.js";
 import authenticate from "../middlewares/authenticate.js";
+import optionalAuthenticate from "../middlewares/optionalAuthenticate.js";
 import validate from "../middlewares/validate.js";
 import {
   createRecipeSchema,
@@ -62,8 +63,13 @@ const recipeRouter = express.Router();
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-recipeRouter.get("/", validate(listRecipesQuerySchema, "query"), getRecipes);
 
+recipeRouter.get(
+  "/",
+  optionalAuthenticate,
+  validate(listRecipesQuerySchema, "query"),
+  getRecipes
+);
 /**
  * @openapi
  * /api/recipes/me:

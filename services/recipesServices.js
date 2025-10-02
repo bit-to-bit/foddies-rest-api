@@ -8,7 +8,7 @@ const { Recipe, Category, Area, Ingredient, User, RecipeIngredient, Favorite } =
 import { sequelize } from "../db/sequelize.js";
 import httpError from "../helpers/httpError.js";
 
-export const recipeDetails = (filters = {}) => {
+export const recipeDetails = (filters = {}, userId = null) => {
   const { category, area, ingredient } = filters;
   const include = [];
   include.push({
@@ -53,6 +53,14 @@ export const recipeDetails = (filters = {}) => {
     as: "owner",
     attributes: ["id", "name", "avatar"],
   });
+  if (userId) {
+    include.push({
+      model: Favorite,
+      as: "favorites",
+      where: { userId },
+      required: false,
+    });
+  }
   return include;
 };
 
@@ -62,9 +70,10 @@ export const getAllRecipes = async ({
   area,
   page = 1,
   limit = 8,
+  userId,
 }) => {
   const offset = (page - 1) * limit;
-  const include = recipeDetails({ category, area, ingredient });
+  const include = recipeDetails({ category, area, ingredient }, userId);
 
   const { count: total, rows: recipes } = await Recipe.findAndCountAll({
     include,
@@ -73,9 +82,14 @@ export const getAllRecipes = async ({
     order: [["id", "DESC"]],
     distinct: true,
   });
+  const normalized = recipes.map((r) => ({
+    ...r.dataValues,
+    isFavorite: userId ? r.favorites && r.favorites.length > 0 : false,
+  }));
+  console.log(userId);
 
   return {
-    recipes,
+    recipes: normalized,
     total,
     page,
     totalPages: Math.ceil(total / limit),
