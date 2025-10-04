@@ -13,12 +13,14 @@ import {
   fetchPopularRecipes,
 } from "../controllers/recipesControllers.js";
 import authenticate from "../middlewares/authenticate.js";
+import upload from "../middlewares/upload.js";
 import optionalAuthenticate from "../middlewares/optionalAuthenticate.js";
 import validate from "../middlewares/validate.js";
 import {
   createRecipeSchema,
   listRecipesQuerySchema,
 } from "../schemas/recipesSchemas.js";
+
 const recipeRouter = express.Router();
 
 // recipeRouter.use(authenticate);
@@ -328,7 +330,13 @@ recipeRouter.get("/:id", getRecipeDetails);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-recipeRouter.post("/", authenticate, validate(createRecipeSchema), addRecipe);
+recipeRouter.post(
+  "/",
+  authenticate,
+  validate(createRecipeSchema),
+  upload.single("thumb"),
+  addRecipe
+);
 
 /**
  * @openapi

@@ -45,7 +45,7 @@ export const getRecipeDetails = async (req, res, next) => {
 export const addRecipe = async (req, res, next) => {
   try {
     const { id: ownerId } = req.user;
-    const recipe = await createRecipe({ ...req.body, ownerId });
+    const recipe = await createRecipe({ ...req.body, ownerId }, req.file);
     res.status(201).json(recipe);
   } catch (error) {
     next(error);

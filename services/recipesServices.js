@@ -103,7 +103,7 @@ export const getRecipeById = async (id) => {
   return recipe;
 };
 
-export const createRecipe = async (data) => {
+export const createRecipe = async (data, file) => {
   const transaction = await sequelize.transaction();
 
   try {
@@ -124,6 +124,18 @@ export const createRecipe = async (data) => {
     const createdRecipe = await Recipe.findByPk(recipe.id, {
       include: recipeDetails(),
     });
+
+    if (file) {
+      const { url } = await cloudinary.uploader.upload(file.path, {
+        folder: "foodies/recipes",
+        use_filename: true,
+      });
+      thumb = url;
+      await fs.unlink(file.path);
+      await createdRecipe.update({ thumb });
+      await createdRecipe.save();
+    }
+
     return createdRecipe;
   } catch (error) {
     await transaction.rollback();
