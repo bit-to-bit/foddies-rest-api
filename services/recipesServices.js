@@ -1,12 +1,12 @@
 import models from "../models/index.js";
-
-import e from "express";
 import { Op } from "sequelize";
-const { Recipe, Category, Area, Ingredient, User, RecipeIngredient, Favorite } =
-  models;
-
 import { sequelize } from "../db/sequelize.js";
 import httpError from "../helpers/httpError.js";
+import fs from "node:fs/promises";
+import cloudinary from "../helpers/cloudinary.js";
+
+const { Recipe, Category, Area, Ingredient, User, RecipeIngredient, Favorite } =
+  models;
 
 export const recipeDetails = (filters = {}, userId = null) => {
   const { category, area, ingredient } = filters;
@@ -105,9 +105,19 @@ export const getRecipeById = async (id) => {
 
 export const createRecipe = async (data, file) => {
   const transaction = await sequelize.transaction();
+  let thumb = data.thumb;
 
   try {
-    const recipe = await Recipe.create(data, { transaction });
+    if (file) {
+      const res = await cloudinary.uploader.upload(file.path, {
+        folder: "foodies/recipes",
+        use_filename: true,
+      });
+      thumb = res.url;
+      await fs.unlink(file.path);
+    }
+
+    const recipe = await Recipe.create({ ...data, thumb }, { transaction });
 
     if (data.ingredients && data.ingredients.length > 0) {
       const ingredientMeasures = data.ingredients.map((item) => ({
@@ -124,17 +134,6 @@ export const createRecipe = async (data, file) => {
     const createdRecipe = await Recipe.findByPk(recipe.id, {
       include: recipeDetails(),
     });
-
-    if (file) {
-      const { url } = await cloudinary.uploader.upload(file.path, {
-        folder: "foodies/recipes",
-        use_filename: true,
-      });
-      thumb = url;
-      await fs.unlink(file.path);
-      await createdRecipe.update({ thumb });
-      await createdRecipe.save();
-    }
 
     return createdRecipe;
   } catch (error) {

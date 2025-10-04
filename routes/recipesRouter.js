@@ -134,7 +134,9 @@ recipeRouter.get(
  *         description: Internal server error
  */
 recipeRouter.get("/filters", (req, res, next) => {
-  req.params.category = String(req.query.category || '').toLowerCase().replace(/\s+/g, '-');
+  req.params.category = String(req.query.category || "")
+    .toLowerCase()
+    .replace(/\s+/g, "-");
   return getCategoryFilters(req, res, next);
 });
 
@@ -334,7 +336,7 @@ recipeRouter.post(
   "/",
   authenticate,
   validate(createRecipeSchema),
-  upload.single("thumb"),
+  upload.single("photo"),
   addRecipe
 );
 

@@ -1,5 +1,4 @@
 import httpError from "../helpers/httpError.js";
-import { Recipe } from "../models/recipe.js";
 import {
   getAllRecipes,
   getRecipeById,
@@ -11,6 +10,8 @@ import {
   getUserFavoriteRecipes,
   getPopularRecipes,
 } from "../services/recipesServices.js";
+
+
 export const getRecipes = async (req, res, next) => {
   try {
     const { category, ingredient, area, page = 1, limit = 8 } = req.query;
