@@ -397,16 +397,20 @@
  *             $ref: '#/components/schemas/Ingredient'
  *         owner:
  *           $ref: '#/components/schemas/User'
- *     CreateRecipeRequest:
+ *     CreateRecipeFormData:
  *       type: object
+ *       description: >
+ *         Form-data version of the create recipe payload.  
+ *         You can provide either **photo** (file upload) or **thumb** (URL), or both.  
+ *         For **ingredients**, send them as an array of objects using bracket notation, for example:  
+ *         `ingredients[0][ingredientId]=1`, `ingredients[0][measure]=1 cup`,  
+ *         `ingredients[1][ingredientId]=2`, `ingredients[1][measure]=2 tsp`, etc.
  *       required:
  *         - title
  *         - categoryId
- *         - ownerId
  *         - areaId
  *         - instructions
  *         - description
- *         - thumb
  *         - time
  *         - ingredients
  *       properties:
@@ -416,27 +420,30 @@
  *         description:
  *           type: string
  *           example: This is an easy and delicious recipe that is great for all occasions.
- *         thumb:
- *           type: string
- *           format: uri
- *           example: https://example.com/images/my-recipe-thumbnail.jpg
  *         time:
  *           type: integer
  *           example: 60
  *         instructions:
  *           type: string
  *           example: First, preheat the oven. Next, mix the ingredients. Finally, bake for 30 minutes.
- *         ownerId:
- *           type: integer
- *           example: 6
  *         areaId:
  *           type: integer
  *           example: 1
  *         categoryId:
  *           type: integer
  *           example: 1
+ *         thumb:
+ *           type: string
+ *           format: uri
+ *           nullable: true
+ *           example: https://example.com/images/my-recipe-thumbnail.jpg
+ *         photo:
+ *           type: string
+ *           format: binary
+ *           description: Optional image file upload. Field name must be **photo**.
  *         ingredients:
  *           type: array
+ *           description: Array of ingredient objects sent using bracket notation in form-data.
  *           items:
  *             type: object
  *             required:
@@ -469,6 +476,25 @@
  *           type: string
  *           format: date-time
  *           example: 2025-09-29T18:02:26.485Z
+ *     UserRecipesResponse:
+ *       type: object
+ *       properties:
+ *         recipes:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Recipe'
+ *         total:
+ *           type: integer
+ *           example: 12
+ *         page:
+ *           type: integer
+ *           example: 1
+ *         limit:
+ *           type: integer
+ *           example: 8
+ *         totalPages:
+ *           type: integer
+ *           example: 2
  *   responses:
  *     BadRequest:
  *       description: Invalid input data

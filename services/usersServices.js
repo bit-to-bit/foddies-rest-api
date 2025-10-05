@@ -123,6 +123,44 @@ const updateUser = async (filter, data) => {
   return user;
 };
 
+const getUserRecipes = async (id, page = 1, limit = 8) => {
+  const user = await User.findByPk(id);
+
+  if (!user) {
+    return null;
+  }
+
+  const offset = (page - 1) * limit;
+
+  const [total, recipes] = await Promise.all([
+    Recipe.count({ where: { ownerId: id } }),
+    Recipe.findAll({
+      where: { ownerId: id },
+      offset,
+      limit,
+      order: [["id", "DESC"]],
+      include: [
+        { model: models.Category, as: "category" },
+        { model: models.Area, as: "area" },
+        {
+          model: models.User,
+          as: "owner",
+          attributes: ["id", "name", "email", "avatar"],
+        },
+        { model: models.Ingredient, as: "ingredients" },
+      ],
+    }),
+  ]);
+
+  return {
+    recipes,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
+};
+
 export default {
   findUser,
   getUserDetails,
@@ -133,4 +171,5 @@ export default {
   subscribe,
   unsubscribe,
   updateAvatar,
+  getUserRecipes,
 };

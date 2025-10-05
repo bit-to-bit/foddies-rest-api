@@ -14,6 +14,9 @@ DATABASE_PORT=5432
 APP_PORT=3000
 APP_HOST=http://localhost
 JWT_SECRET=jwt_secret_key
+CLOUDINARY_CLOUD_NAME=name
+CLOUDINARY_API_KEY=api-key
+CLOUDINARY_API_SECRET=api-secrete
 ```
 
 ## Installation
