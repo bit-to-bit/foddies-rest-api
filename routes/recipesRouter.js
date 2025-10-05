@@ -91,17 +91,17 @@ recipeRouter.get(
  *         name: category
  *         schema:
  *           type: string
- *         description: Category name (case-insensitive). Example: Dessert
+ *         description: Category name (case-insensitive). Example Dessert
  *       - in: query
  *         name: area
  *         schema:
  *           type: string
- *         description: Area/cuisine name (case-insensitive). Example: French
+ *         description: Area/cuisine name (case-insensitive). Example French
  *       - in: query
  *         name: ingredient
  *         schema:
  *           type: string
- *         description: Ingredient name (case-insensitive). Example: Sugar
+ *         description: Ingredient name (case-insensitive). Example Sugar
  *
  *     responses:
  *       200:
@@ -335,7 +335,7 @@ recipeRouter.get("/:id", getRecipeDetails);
 recipeRouter.post(
   "/",
   authenticate,
-  validate(createRecipeSchema),
+  // validate(createRecipeSchema),
   upload.single("photo"),
   addRecipe
 );
