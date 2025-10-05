@@ -13,8 +13,8 @@ import {
   fetchPopularRecipes,
 } from "../controllers/recipesControllers.js";
 import authenticate from "../middlewares/authenticate.js";
-import upload from "../middlewares/upload.js";
 import optionalAuthenticate from "../middlewares/optionalAuthenticate.js";
+import upload from "../middlewares/upload.js";
 import validate from "../middlewares/validate.js";
 import {
   createRecipeSchema,
@@ -260,6 +260,7 @@ recipeRouter.get(
  */
 recipeRouter.get(
   "/popular",
+  optionalAuthenticate,
   validate(listRecipesQuerySchema, "query"),
   fetchPopularRecipes
 );

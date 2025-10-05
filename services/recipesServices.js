@@ -228,30 +228,55 @@ export const getUserFavoriteRecipes = async (
   };
 };
 
-export const getPopularRecipes = async ({ page = 1, limit = 4 } = {}) => {
+export const getPopularRecipes = async ({ page = 1, limit = 4, userId = null } = {}) => {
   const offset = (page - 1) * limit;
   const recipes = await Recipe.findAll({
     attributes: {
       include: [
         [
           sequelize.literal(`(
-            SELECT COUNT(*) 
-            FROM "favorites" AS f 
+            SELECT COUNT(*)
+            FROM "favorites" AS f
             WHERE f."recipeId" = "recipe"."id"
           )`),
           "favoritesCount",
         ],
       ],
     },
-    include: recipeDetails(),
+    include: [
+      { model: Category, as: "category", attributes: ["name"] },
+      { model: Area, as: "area", attributes: ["name"] },
+      {
+        model: Ingredient,
+        as: "ingredients",
+        attributes: ["name", "img"],
+        through: { attributes: ["measure"] },
+      },
+      { model: User, as: "owner", attributes: ["id", "name", "avatar"] },
+    ],
     order: [[sequelize.literal('"favoritesCount"'), "DESC"]],
     limit,
     offset,
   });
-
   const totalCount = await Recipe.count();
+  let favoriteIds = new Set();
+  if (userId) {
+    const ids = recipes.map(r => r.id);
+    if (ids.length > 0) {
+      const favRows = await Favorite.findAll({
+        where: { userId, recipeId: { [Op.in]: ids } },
+        attributes: ["recipeId"],
+      });
+      favoriteIds = new Set(favRows.map(r => r.recipeId));
+    }
+  }
+  const normalized = recipes.map(r => {
+    const obj = r.toJSON();
+    obj.isFavorite = favoriteIds.has(obj.id);
+    return obj;
+  });
   return {
-    recipes,
+    recipes: normalized,
     total: totalCount,
     page,
     totalPages: Math.ceil(totalCount / limit),
