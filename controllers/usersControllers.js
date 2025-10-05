@@ -87,6 +87,23 @@ const unsubscribe = async (req, res) => {
   res.status(204).send();
 };
 
+const getUserRecipes = async (req, res) => {
+  const { id } = req.params;
+  const { page = 1, limit = 8 } = req.query;
+
+  const result = await usersServices.getUserRecipes(
+    Number(id),
+    Number(page),
+    Number(limit)
+  );
+
+  if (!result) {
+    throw httpError(404, `User with id = ${id} not found`);
+  }
+
+  res.json(result);
+};
+
 export default {
   getCurrent: controllerWrapper(getCurrent),
   getUserDetails: controllerWrapper(getUserDetails),
@@ -95,4 +112,5 @@ export default {
   getFollowings: controllerWrapper(getFollowings),
   subscribe: controllerWrapper(subscribe),
   unsubscribe: controllerWrapper(unsubscribe),
+  getUserRecipes: controllerWrapper(getUserRecipes),
 };

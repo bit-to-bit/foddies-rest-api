@@ -3,6 +3,9 @@ import express from "express";
 import usersControllers from "../controllers/usersControllers.js";
 import authenticate from "../middlewares/authenticate.js";
 import upload from "../middlewares/upload.js";
+import validate from "../middlewares/validate.js";
+import { userIdParamSchema } from "../schemas/userSchemas.js";
+import { paginationQuerySchema } from "../schemas/paginationSchemas.js";
 
 const usersRouter = express.Router();
 usersRouter.use(authenticate);
@@ -259,5 +262,60 @@ usersRouter.post("/:id/subscribe", usersControllers.subscribe);
  *         $ref: '#/components/responses/InternalServerError'
  */
 usersRouter.delete("/:id/unsubscribe", usersControllers.unsubscribe);
+
+/**
+ * @openapi
+ * /api/users/{id}/recipes:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get recipes by user
+ *     description: Returns a paginated list of recipes created by the given user ID.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Numeric ID of the user whose recipes are being requested
+ *         schema:
+ *           type: integer
+ *           example: 2
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         description: Page number for pagination
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         description: Number of results per page
+ *         schema:
+ *           type: integer
+ *           example: 8
+ *     responses:
+ *       '200':
+ *         description: Recipes retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserRecipesResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+usersRouter.get(
+  "/:id/recipes",
+  validate(userIdParamSchema, "params"),
+  validate(paginationQuerySchema, "query"),
+  usersControllers.getUserRecipes
+);
 
 export default usersRouter;

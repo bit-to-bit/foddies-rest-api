@@ -309,15 +309,32 @@ recipeRouter.get("/:id", getRecipeDetails);
  *     tags:
  *       - Recipes
  *     summary: Add a new recipe
- *     description: Creates a new recipe with details including title, category, area, ingredients, instructions, and owner.
+ *     description: Creates a new recipe with details including title, category, area, ingredients, instructions, and owner. Accepts multipart/form-data (supports optional image upload under the "photo" field).
  *     security:
  *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/CreateRecipeRequest'
+ *             $ref: '#/components/schemas/CreateRecipeFormData'
+ *           examples:
+ *             MultipartWithFile:
+ *               summary: Fields + uploaded photo
+ *               value:
+ *                 title: "My Awesome Recipe"
+ *                 categoryId: 1
+ *                 areaId: 1
+ *                 instructions: "First, preheat the oven. Next, mix the ingredients. Finally, bake for 30 minutes."
+ *                 description: "This is an easy and delicious recipe that is great for all occasions."
+ *                 time: 60
+ *                 ingredients[0][ingredientId]: 1
+ *                 ingredients[0][measure]: 1 cup
+ *                 ingredients[1][ingredientId]: 2
+ *                 ingredients[1][measure]: 2 tsp
+ *                 ingredients[2][ingredientId]: 3
+ *                 ingredients[2][measure]: 1/2 cup
+ *                 # photo is a file part; not representable inline here
  *     responses:
  *       '201':
  *         description: Recipe created successfully
