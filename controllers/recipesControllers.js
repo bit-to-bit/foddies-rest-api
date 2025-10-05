@@ -1,4 +1,5 @@
 import httpError from "../helpers/httpError.js";
+import * as recipesServices from '../services/recipesServices.js';
 import {
   getAllRecipes,
   getRecipeById,
@@ -124,11 +125,18 @@ export const fetchFavoriteRecipes = async (req, res, next) => {
 export const fetchPopularRecipes = async (req, res, next) => {
   try {
     const { page = 1, limit = 4 } = req.query;
-    const recipes = await getPopularRecipes({
+    const userId = req.user?.id || null;
+
+    const data = await recipesServices.getPopularRecipes({
       page: Number(page),
       limit: Number(limit),
+      userId,
     });
-    res.json(recipes);
+    res.json({
+      status: 200,
+      message: "Popular recipes retrieved successfully",
+      data,
+    });
   } catch (error) {
     next(error);
   }
