@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import cloudinary from "../helpers/cloudinary.js";
 import models from "../models/index.js";
 
-const { User, UserFollower, Recipe } = models;
+const { User, UserFollower, Recipe, Favorite } = models;
 
 const findUser = async (filter) => await User.findOne({ where: filter });
 
@@ -16,7 +16,9 @@ const getUserDetails = async (filter) => {
     return null;
   }
   const recipesAmount = await Recipe.count({ where: { ownerId: user.id } });
-  const favoriteRecipesAmount = 0;
+  const favoriteRecipesAmount = await Favorite.count({
+    where: { userId: user.id },
+  });
   const followersAmount = await user.countFollowers();
   const followingsAmount = await user.countFollowing();
   return {
