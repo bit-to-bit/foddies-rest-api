@@ -119,8 +119,10 @@ export const createRecipe = async (data, file) => {
 
     const recipe = await Recipe.create({ ...data, thumb }, { transaction });
 
-    if (data.ingredients && data.ingredients.length > 0) {
-      const ingredientMeasures = data.ingredients.map((item) => ({
+    const ingredients = JSON.parse(data.ingredients);
+
+    if (ingredients && ingredients.length > 0) {
+      const ingredientMeasures = ingredients.map((item) => ({
         recipeId: recipe.id,
         ingredientId: item.ingredientId,
         measure: item.measure,
