@@ -1,5 +1,4 @@
 import httpError from "../helpers/httpError.js";
-import { Recipe } from "../models/recipe.js";
 import {
   getAllRecipes,
   getRecipeById,
@@ -11,6 +10,8 @@ import {
   getUserFavoriteRecipes,
   getPopularRecipes,
 } from "../services/recipesServices.js";
+
+
 export const getRecipes = async (req, res, next) => {
   try {
     const { category, ingredient, area, page = 1, limit = 8 } = req.query;
@@ -45,7 +46,7 @@ export const getRecipeDetails = async (req, res, next) => {
 export const addRecipe = async (req, res, next) => {
   try {
     const { id: ownerId } = req.user;
-    const recipe = await createRecipe({ ...req.body, ownerId });
+    const recipe = await createRecipe({ ...req.body, ownerId }, req.file);
     res.status(201).json(recipe);
   } catch (error) {
     next(error);

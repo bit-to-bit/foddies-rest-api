@@ -13,12 +13,14 @@ import {
   fetchPopularRecipes,
 } from "../controllers/recipesControllers.js";
 import authenticate from "../middlewares/authenticate.js";
+import upload from "../middlewares/upload.js";
 import optionalAuthenticate from "../middlewares/optionalAuthenticate.js";
 import validate from "../middlewares/validate.js";
 import {
   createRecipeSchema,
   listRecipesQuerySchema,
 } from "../schemas/recipesSchemas.js";
+
 const recipeRouter = express.Router();
 
 // recipeRouter.use(authenticate);
@@ -89,17 +91,17 @@ recipeRouter.get(
  *         name: category
  *         schema:
  *           type: string
- *         description: Category name (case-insensitive). Example: Dessert
+ *         description: Category name (case-insensitive). Example Dessert
  *       - in: query
  *         name: area
  *         schema:
  *           type: string
- *         description: Area/cuisine name (case-insensitive). Example: French
+ *         description: Area/cuisine name (case-insensitive). Example French
  *       - in: query
  *         name: ingredient
  *         schema:
  *           type: string
- *         description: Ingredient name (case-insensitive). Example: Sugar
+ *         description: Ingredient name (case-insensitive). Example Sugar
  *
  *     responses:
  *       200:
@@ -132,7 +134,9 @@ recipeRouter.get(
  *         description: Internal server error
  */
 recipeRouter.get("/filters", (req, res, next) => {
-  req.params.category = String(req.query.category || '').toLowerCase().replace(/\s+/g, '-');
+  req.params.category = String(req.query.category || "")
+    .toLowerCase()
+    .replace(/\s+/g, "-");
   return getCategoryFilters(req, res, next);
 });
 
@@ -328,7 +332,13 @@ recipeRouter.get("/:id", getRecipeDetails);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-recipeRouter.post("/", authenticate, validate(createRecipeSchema), addRecipe);
+recipeRouter.post(
+  "/",
+  authenticate,
+  // validate(createRecipeSchema),
+  upload.single("photo"),
+  addRecipe
+);
 
 /**
  * @openapi

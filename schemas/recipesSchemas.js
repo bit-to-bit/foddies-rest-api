@@ -1,6 +1,6 @@
 import Joi from "joi";
-
 import { paginationQuerySchema } from "./paginationSchemas.js";
+
 
 export const createRecipeSchema = Joi.object({
   title: Joi.string().min(3).max(255).required(),
