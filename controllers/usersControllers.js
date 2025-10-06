@@ -13,7 +13,8 @@ const getCurrent = async (req, res) => {
 
 const getUserDetails = async (req, res) => {
   const { id } = req.params;
-  const result = await usersServices.getUserDetails({ id });
+  const viewerId = req.user?.id || null;
+  const result = await usersServices.getUserDetails({ id }, viewerId);
   if (!result) {
     throw httpError(404, `User with id = ${id} not found`);
   }
