@@ -7,7 +7,7 @@ const { User, UserFollower, Recipe, Favorite } = models;
 
 const findUser = async (filter) => await User.findOne({ where: filter });
 
-const getUserDetails = async (filter) => {
+const getUserDetails = async (filter, viewerId = null) => {
   const user = await User.findOne({
     attributes: ["id", "name", "email", "avatar"],
     where: filter,
@@ -21,12 +21,20 @@ const getUserDetails = async (filter) => {
   });
   const followersAmount = await user.countFollowers();
   const followingsAmount = await user.countFollowing();
+  let isSubscribed = false;
+  if (viewerId) {
+    const sub = await UserFollower.findOne({
+      where: { followerId: viewerId, followingId: user.id },
+    });
+    isSubscribed = !!sub;
+  }
   return {
     ...user.dataValues,
     recipesAmount,
     favoriteRecipesAmount,
     followersAmount,
     followingsAmount,
+    isSubscribed,
   };
 };
 
