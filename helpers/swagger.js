@@ -2,6 +2,7 @@ import path from "path";
 import swaggerJSDoc from "swagger-jsdoc";
 import { fileURLToPath } from "url";
 
+const { APP_HOST, APP_PORT = 3000 } = process.env;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -15,7 +16,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: `${APP_HOST}:${APP_PORT}`,
       },
     ],
   },
